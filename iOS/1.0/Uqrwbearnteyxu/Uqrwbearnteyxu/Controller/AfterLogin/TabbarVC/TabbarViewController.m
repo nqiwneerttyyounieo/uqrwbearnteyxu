@@ -8,9 +8,10 @@
 
 #import "TabbarViewController.h"
 #import "DCPathButton.h"
+#import "RightMenuViewController.h"
 
 
-@interface TabbarViewController ()<DCPathButtonDelegate,UITabBarControllerDelegate>
+@interface TabbarViewController ()<DCPathButtonDelegate,UITabBarControllerDelegate,RightMenuViewControllerDelegate>
 
 @end
 
@@ -19,11 +20,37 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //self.delegate=self;
-    [[[[self.tabBarController tabBar]items]objectAtIndex:0]setEnabled:FALSE];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
+                                                             bundle: nil];
+    
+    RightMenuViewController *rightMenu = (RightMenuViewController*)[mainStoryboard
+                                                                    instantiateViewControllerWithIdentifier: @"RightMenuViewController"];
+    
+    rightMenu.delegate = self;
+    
+    [SlideNavigationController sharedInstance].rightMenu = rightMenu;
+    [SlideNavigationController sharedInstance].menuRevealAnimationDuration = .18;
 
+    
+    [[[[self.tabBarController tabBar]items]objectAtIndex:0]setEnabled:FALSE];
+    [[[[[self tabBarController] tabBar] items] objectAtIndex:0] setBadgeValue:@"12"];
     
     [self configureDCPathButton];
     // Do any additional setup after loading the view.
+   
+}
+
+-(void)rightMenuVC:(id)sender didSelectMenu:(enum menus)selectedMenu{
+    UINavigationController *nav = [self.viewControllers objectAtIndex:1];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
+                                                             bundle: nil];
+    
+    UIViewController *vc ;
+    vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+
+  //  self.navigationController.navigationBar.hidden = YES;
+    
+    [nav pushViewController:vc animated:YES];
     
 }
 
@@ -81,7 +108,10 @@
     
     // Change the DCButton's center
     //
+    //dcPathButton.frame = CGRectMake(0, 0, 60, 60);
+
     dcPathButton.dcButtonCenter = CGPointMake(self.view.bounds.size.width / 2, self.view.bounds.size.height - 25.5f);
+    dcPathButton.backgroundColor = [UIColor redColor];
     
     // Setting the DCButton appearance
     //
@@ -132,6 +162,18 @@
 }
 - (void)didDismissDCPathButtonItems:(DCPathButton *)dcPathButton{
     
+}
+
+#pragma mark - SlideNavigationController Methods -
+
+- (BOOL)slideNavigationControllerShouldDisplayLeftMenu
+{
+    return NO;
+}
+
+- (BOOL)slideNavigationControllerShouldDisplayRightMenu
+{
+    return YES;
 }
 
 

@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "WebServiceFramework.h"
 #import "UserWebServiceClient.h"
+#import "RightMenuViewController.h"
+#import "SlideNavigationController.h"
 
 @interface AppDelegate ()
 
@@ -24,6 +26,16 @@
    // [service signInWithEmailId:@"rahul@gmai.com" password:@"password" deviceToken:nil target:service onSuccess:nil onFailure:nil];
     
    // [service signUpUserWithName:@"" emailId:@"rahul@gmai.com" password:@"Pere@123" deviceToken:nil target:self onSuccess:nil onFailure:nil];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
+                                                             bundle: nil];
+
+    RightMenuViewController *rightMenu = (RightMenuViewController*)[mainStoryboard
+                                                                    instantiateViewControllerWithIdentifier: @"RightMenuViewController"];
+    
+    [SlideNavigationController sharedInstance].rightMenu = rightMenu;
+    [SlideNavigationController sharedInstance].menuRevealAnimationDuration = .18;
+    
+    
     
     return YES;
 }

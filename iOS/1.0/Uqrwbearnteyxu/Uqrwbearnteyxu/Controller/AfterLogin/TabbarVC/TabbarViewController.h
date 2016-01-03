@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SlideNavigationController.h"
 
-@interface TabbarViewController : UITabBarController
+@interface TabbarViewController : UITabBarController<SlideNavigationControllerDelegate>
 
 @end

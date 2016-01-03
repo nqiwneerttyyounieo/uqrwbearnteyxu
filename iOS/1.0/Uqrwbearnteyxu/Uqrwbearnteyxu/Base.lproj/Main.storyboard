@@ -546,7 +546,7 @@
         <!--View Controller-->
         <scene sceneID="JvK-5Z-rpR">
             <objects>
-                <viewController id="ZcI-NC-bg4" sceneMemberID="viewController">
+                <viewController id="ZcI-NC-bg4" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="J8X-U8-wN0"/>
                         <viewControllerLayoutGuide type="bottom" id="MyK-DL-YLn"/>
@@ -559,8 +559,18 @@
                                 <rect key="frame" x="98" y="121" width="46" height="30"/>
                                 <animations/>
                                 <state key="normal" title="Button"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i0y-sR-Mln">
+                                <rect key="frame" x="90" y="44" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2va-iK-PWP">
+                                <rect key="frame" x="190" y="44" width="30" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Oro"/>
                                 <connections>
-                                    <segue destination="pAV-wZ-6Fk" kind="show" id="W0X-Zb-SG9"/>
+                                    <action selector="btnProgramClicked:" destination="ZcI-NC-bg4" eventType="touchUpInside" id="BoV-4A-gAb"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -572,14 +582,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Je4-jz-qET" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="419" y="-346"/>
-        </scene>
-        <!--TabbarViewController-->
-        <scene sceneID="rAo-SC-rVg">
-            <objects>
-                <viewControllerPlaceholder storyboardName="MainAppStoryboard" referencedIdentifier="TabbarViewController" id="pAV-wZ-6Fk" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="FeR-x5-2XK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="722.5" y="-501"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
