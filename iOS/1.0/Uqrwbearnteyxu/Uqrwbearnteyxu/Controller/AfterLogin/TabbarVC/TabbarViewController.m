@@ -9,6 +9,7 @@
 #import "TabbarViewController.h"
 #import "DCPathButton.h"
 #import "RightMenuViewController.h"
+#import "ProfileViewController.h"
 
 
 @interface TabbarViewController ()<DCPathButtonDelegate,UITabBarControllerDelegate,RightMenuViewControllerDelegate>
@@ -41,17 +42,21 @@
 }
 
 -(void)rightMenuVC:(id)sender didSelectMenu:(enum menus)selectedMenu{
-    UINavigationController *nav = [self.viewControllers objectAtIndex:1];
+    UINavigationController *nav = self.selectedViewController;
+    
+    UIViewController *controller = [nav topViewController];
+    if([controller isKindOfClass:[ProfileViewController class]]){
+        return;
+    }
+    
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
                                                              bundle: nil];
     
     UIViewController *vc ;
     vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
 
-  //  self.navigationController.navigationBar.hidden = YES;
     
     [nav pushViewController:vc animated:YES];
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -111,7 +116,6 @@
     //dcPathButton.frame = CGRectMake(0, 0, 60, 60);
 
     dcPathButton.dcButtonCenter = CGPointMake(self.view.bounds.size.width / 2, self.view.bounds.size.height - 25.5f);
-    dcPathButton.backgroundColor = [UIColor redColor];
     
     // Setting the DCButton appearance
     //

@@ -66,7 +66,7 @@
             UIImageView *imgView = (UIImageView *)[cell viewWithTag:300];
             UILabel *lblName = (UILabel *)[cell viewWithTag:301];
 
-            imgView.image = [UIImage imageNamed:@"icon29.png"];
+            imgView.image = [UIImage imageNamed:@"sports-icon.png"];
             lblName.text = @"Sports";
             
 			break;
@@ -76,7 +76,7 @@
             UIImageView *imgView = (UIImageView *)[cell viewWithTag:300];
             UILabel *lblName = (UILabel *)[cell viewWithTag:301];
             
-            imgView.image = [UIImage imageNamed:@"icon29.png"];
+            imgView.image = [UIImage imageNamed:@"settings-icon.png"];
             lblName.text = @"Settings";
             
             break;
@@ -88,7 +88,7 @@
             UIImageView *imgView = (UIImageView *)[cell viewWithTag:300];
             UILabel *lblName = (UILabel *)[cell viewWithTag:301];
             
-            imgView.image = [UIImage imageNamed:@"icon29.png"];
+            imgView.image = [UIImage imageNamed:@"statastics.png"];
             lblName.text = @"Statistics";
             
             break;
@@ -99,7 +99,7 @@
             UIImageView *imgView = (UIImageView *)[cell viewWithTag:300];
             UILabel *lblName = (UILabel *)[cell viewWithTag:301];
             
-            imgView.image = [UIImage imageNamed:@"icon29.png"];
+            imgView.image = [UIImage imageNamed:@"help-icon.png"];
             lblName.text = @"Help";
             
             break;
@@ -145,6 +145,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
 	id <SlideNavigationContorllerAnimator> revealAnimator;
 	CGFloat animationDuration = 0;
 
