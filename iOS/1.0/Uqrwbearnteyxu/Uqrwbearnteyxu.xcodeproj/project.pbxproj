@@ -32,7 +32,7 @@
 		666C35FD1C15F38B00B9C1A9 /* BaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = 666C35DF1C15F38B00B9C1A9 /* BaseService.m */; };
 		666C36011C15F38B00B9C1A9 /* UserWebServiceClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 666C35E71C15F38B00B9C1A9 /* UserWebServiceClient.m */; };
 		666C36021C15F38B00B9C1A9 /* WebServiceChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 666C35E91C15F38B00B9C1A9 /* WebServiceChannel.m */; };
-		666C36051C15F43B00B9C1A9 /* OnLookerParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 666C36041C15F43B00B9C1A9 /* OnLookerParser.m */; };
+		666C36051C15F43B00B9C1A9 /* ResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 666C36041C15F43B00B9C1A9 /* ResponseParser.m */; };
 		666C36081C15F53500B9C1A9 /* Response.m in Sources */ = {isa = PBXBuildFile; fileRef = 666C36071C15F53500B9C1A9 /* Response.m */; };
 		666C360C1C1BE12500B9C1A9 /* back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 666C36091C1BE12500B9C1A9 /* back@2x.png */; };
 		666C360D1C1BE12500B9C1A9 /* lock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 666C360A1C1BE12500B9C1A9 /* lock@2x.png */; };
@@ -172,8 +172,8 @@
 		666C35E91C15F38B00B9C1A9 /* WebServiceChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebServiceChannel.m; sourceTree = "<group>"; };
 		666C35EA1C15F38B00B9C1A9 /* WebServiceConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServiceConstants.h; sourceTree = "<group>"; };
 		666C35EB1C15F38B00B9C1A9 /* WebServiceFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServiceFramework.h; sourceTree = "<group>"; };
-		666C36031C15F43B00B9C1A9 /* OnLookerParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnLookerParser.h; sourceTree = "<group>"; };
-		666C36041C15F43B00B9C1A9 /* OnLookerParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnLookerParser.m; sourceTree = "<group>"; };
+		666C36031C15F43B00B9C1A9 /* ResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseParser.h; sourceTree = "<group>"; };
+		666C36041C15F43B00B9C1A9 /* ResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseParser.m; sourceTree = "<group>"; };
 		666C36061C15F53500B9C1A9 /* Response.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Response.h; sourceTree = "<group>"; };
 		666C36071C15F53500B9C1A9 /* Response.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Response.m; sourceTree = "<group>"; };
 		666C36091C1BE12500B9C1A9 /* back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@2x.png"; sourceTree = "<group>"; };
@@ -445,8 +445,8 @@
 		666C35DD1C15F38B00B9C1A9 /* Service Classes */ = {
 			isa = PBXGroup;
 			children = (
-				666C36031C15F43B00B9C1A9 /* OnLookerParser.h */,
-				666C36041C15F43B00B9C1A9 /* OnLookerParser.m */,
+				666C36031C15F43B00B9C1A9 /* ResponseParser.h */,
+				666C36041C15F43B00B9C1A9 /* ResponseParser.m */,
 				666C35DE1C15F38B00B9C1A9 /* BaseService.h */,
 				666C35DF1C15F38B00B9C1A9 /* BaseService.m */,
 				666C35E61C15F38B00B9C1A9 /* UserWebServiceClient.h */,
@@ -1032,7 +1032,7 @@
 				666C35FD1C15F38B00B9C1A9 /* BaseService.m in Sources */,
 				666C36111C1C62B400B9C1A9 /* UserModel.m in Sources */,
 				666C35FC1C15F38B00B9C1A9 /* Reachability.m in Sources */,
-				666C36051C15F43B00B9C1A9 /* OnLookerParser.m in Sources */,
+				666C36051C15F43B00B9C1A9 /* ResponseParser.m in Sources */,
 				8BEF0DAB1C38D65E00A78BB3 /* SlideNavigationContorllerAnimatorSlide.m in Sources */,
 				66AE3C211C12ABC900A0238F /* ViewController.m in Sources */,
 				666C35F41C15F38B00B9C1A9 /* AFURLSessionManager.m in Sources */,

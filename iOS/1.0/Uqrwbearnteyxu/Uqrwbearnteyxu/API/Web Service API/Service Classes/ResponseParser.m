@@ -6,19 +6,19 @@
 //  Copyright © 2015 Perennial Systems. All rights reserved.
 //
 
-#import "OnLookerParser.h"
+#import "ResponseParser.h"
 #import "Response.h"
 #import "UserModel.h"
 
 #define kSuccessResponseCode 0
 
-@interface OnLookerParser ()
+@interface ResponseParser ()
 
 @property (strong, nonatomic) Response *result;
 
 @end
 
-@implementation OnLookerParser
+@implementation ResponseParser
 
 - (id)init
 {

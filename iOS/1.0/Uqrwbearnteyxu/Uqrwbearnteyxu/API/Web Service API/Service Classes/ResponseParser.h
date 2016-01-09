@@ -11,7 +11,7 @@
 @class UserModel;
 @class Response;
 
-@interface OnLookerParser : NSObject
+@interface ResponseParser : NSObject
 
 // User Web Service Client
 

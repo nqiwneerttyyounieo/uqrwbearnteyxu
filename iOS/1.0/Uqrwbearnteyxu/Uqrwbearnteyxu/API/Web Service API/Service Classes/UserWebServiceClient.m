@@ -9,7 +9,7 @@
 #import "UserWebServiceClient.h"
 #import "WebServiceChannel.h"
 #import "WebServiceConstants.h"
-#import "OnLookerParser.h"
+#import "ResponseParser.h"
 
 NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
 {
@@ -74,7 +74,7 @@ NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
     NSLog(@"json %@ %@",json,error);
     if(!error)
     {
-        OnLookerParser *parser = [[OnLookerParser alloc] init];
+        ResponseParser *parser = [[ResponseParser alloc] init];
         id parsedData = [parser userWebClientSignInParser:json];
         
         
@@ -93,7 +93,7 @@ NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
     {
         if([json[@"Status"] integerValue] == 1){
         
-            OnLookerParser *parser = [[OnLookerParser alloc] init];
+            ResponseParser *parser = [[ResponseParser alloc] init];
             id parsedData = nil;
             
             switch ([asynchroniousRequest tag])
