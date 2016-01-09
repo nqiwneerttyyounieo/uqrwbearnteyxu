@@ -8,6 +8,7 @@
 
 #import "OnLookerParser.h"
 #import "Response.h"
+#import "UserModel.h"
 
 #define kSuccessResponseCode 0
 
@@ -41,11 +42,13 @@
 
 - (Response *)userWebClientSignInParser:(NSDictionary *)json
 {
-    NSDictionary *data = json[@"data"];
 
- //   UserModel *userModel = [[UserModel alloc] initWithData:data];
+    UserModel *userModel = [[UserModel alloc] init];
+    userModel.strUserId = [json valueForKey:@"UserId"];
+    userModel.strAuthToken = [json valueForKey:@"access_token"];
+    userModel.strUserName = [json valueForKey:@"UserName"];
     
-  //  self.result.responseObject = userModel;
+    self.result.responseObject = userModel;
     return self.result;
 }
 

@@ -36,7 +36,6 @@
     [SlideNavigationController sharedInstance].menuRevealAnimationDuration = .18;
     
     
-    
     return YES;
 }
 

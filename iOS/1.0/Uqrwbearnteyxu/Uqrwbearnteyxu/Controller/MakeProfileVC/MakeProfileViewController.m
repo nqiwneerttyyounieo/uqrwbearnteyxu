@@ -11,6 +11,7 @@
 #import "VIewUtility.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "AADatePicker.h"
+#import "CommansUtility.h"
 
 
 @interface MakeProfileViewController ()
@@ -37,6 +38,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUp];
+    UserModel *model = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
+
     
     // Do any additional setup after loading the view.
 }
@@ -114,7 +117,6 @@
     NSDate *minimum = [formatter dateFromString:@"1950-01-01"];
 
     datePicker = [[AADatePicker alloc] initWithFrame:CGRectMake(0, 20, 320, 264)];//datePicker.delegate = self;
-    
     [self.view addSubview:datePicker];
 }
 

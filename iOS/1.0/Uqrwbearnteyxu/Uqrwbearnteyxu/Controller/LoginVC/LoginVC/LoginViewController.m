@@ -13,6 +13,7 @@
 #import "UserWebServiceClient.h"
 #import "WebServiceFramework.h"
 #import "Constants.h"
+#import "CommansUtility.h"
 
 
 #define REGEX_EMAIL @"[A-Z0-9a-z._%+-]{3,}+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
@@ -35,6 +36,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUp];
+    self.txtEmail.text = @"rahul44@gmail.com";
+    self.txtPassword.text = @"Rahul@123";
+    
     // Do any additional setup after loading the view.
 }
 
@@ -236,6 +240,7 @@
 
 -(void)webResponseDidSuccess:(Response *)response{
     [[HUD sharedInstance]hideHUD:self.view];
+    [[CommansUtility sharedInstance]saveUserObject:(UserModel *)response.responseObject key:@"loggedInUser"];
     [self performSegueWithIdentifier:segueMakeProfile sender:self];
    // [self showErrorMessage:@"User registered successfully"];
    // [self dismissViewControllerAnimated:YES completion:nil];

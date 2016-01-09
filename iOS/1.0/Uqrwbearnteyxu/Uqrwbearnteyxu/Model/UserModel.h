@@ -10,8 +10,9 @@
 
 @interface UserModel : NSObject
 
-@property (strong, nonatomic) NSString *authToken;
-@property (readwrite, nonatomic) NSString *userName;
+@property (readwrite, nonatomic) NSString *strUserId;
+@property (strong, nonatomic) NSString *strAuthToken;
+@property (readwrite, nonatomic) NSString *strUserName;
 
 
 @end
