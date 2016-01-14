@@ -10,8 +10,8 @@
 #import "VIewUtility.h"
 #import "TextFieldValidator.h"
 #import "HUD.h"
-#import "UserWebServiceClient.h"
-#import "WebServiceFramework.h"
+#import "UserService.h"
+
 #import "Constants.h"
 #import "CommansUtility.h"
 
@@ -19,12 +19,14 @@
 #define REGEX_EMAIL @"[A-Z0-9a-z._%+-]{3,}+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
 
 
-@interface LoginViewController ()<UIAlertViewDelegate>
+@interface LoginViewController ()<UIAlertViewDelegate,WebServiceDelegate>
 
 @property (strong, nonatomic) IBOutlet UIButton *btnGo;
 @property (strong, nonatomic) IBOutlet UIView *viewBtnContainer;
 @property (strong, nonatomic) IBOutlet TextFieldValidator *txtEmail;
 @property (strong, nonatomic) IBOutlet TextFieldValidator *txtPassword;
+@property (strong, nonatomic) UserService *userWebAPI;
+
 
 @end
 
@@ -36,12 +38,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUp];
-    self.txtEmail.text = @"rahul44@gmail.com";
-    self.txtPassword.text = @"Rahul@123";
+   // self.txtEmail.text = @"rahul70@gmail.com";
+   // self.txtPassword.text = @"Rahul@123";
     
     // Do any additional setup after loading the view.
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden =YES;
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+        self.navigationController.navigationBar.hidden =NO;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -75,6 +91,14 @@
 -(void)setUptextFields{
     [self setupAlerts];
 
+    NSAttributedString *strEmail = [[NSAttributedString alloc] initWithString:@"email" attributes:@{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+    self.txtEmail.attributedPlaceholder = strEmail;
+    NSAttributedString *strPassword = [[NSAttributedString alloc] initWithString:@"password" attributes:@{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+    self.txtPassword.attributedPlaceholder = strPassword;
+
+    self.txtEmail.returnKeyType = UIReturnKeyNext;
+    self.txtPassword.returnKeyType = UIReturnKeySend;
+    
     [self addBottomBorder:self.txtEmail];
     [self addBottomBorder:self.txtPassword];
 
@@ -101,7 +125,7 @@
     
 }
 -(void)setupAlerts{
-    [self.txtEmail addRegx:REGEX_EMAIL withMsg:@"The email address is not found or the password is incorrect. Please enter valid credentials"];
+    [self.txtEmail addRegx:REGEX_EMAIL withMsg:@"Please enter a valid email address"];
 
     self.txtEmail.isMandatory = YES;
     self.txtPassword.isMandatory = YES;
@@ -138,15 +162,13 @@
 }
 
 - (IBAction)btnCancelClicked:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
+        [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Forgot password
 
 -(void)showAlertForForgotPassword{
-    UIAlertView * forgotPassword=[[UIAlertView alloc] initWithTitle:@"Forgot Password"      message:@"Please enter your email id" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    UIAlertView * forgotPassword=[[UIAlertView alloc] initWithTitle:@"FORGOT YOUR PASSWORD?"      message:@"Please enter your email id" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
     forgotPassword.alertViewStyle=UIAlertViewStylePlainTextInput;
 //    [forgotPassword textFieldAtIndex:0].delegate=self;
 
@@ -159,16 +181,16 @@
         NSString *femailId=[alertView textFieldAtIndex:0].text;
         if ([femailId isEqualToString:@""]) {
             UIAlertView *display;
-            display=[[UIAlertView alloc] initWithTitle:@"Email" message:@"Please enter password for resetting password" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+            display=[[UIAlertView alloc] initWithTitle:@"Invalid Email" message:@"Please enter password for resetting password" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
             [display show];
             
         }else{
             if([self NSStringIsValidEmail:femailId]){
-                
+                [self webAPIForgotPassword:femailId];
             }
             else{
                 UIAlertView *display;
-                display=[[UIAlertView alloc] initWithTitle:@"Email" message:@"Please enter valid email" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                display=[[UIAlertView alloc] initWithTitle:@"Invalid Email" message:@"Please enter valid email" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
                 [display show];
                 
             }
@@ -202,6 +224,26 @@
     activeTextfield = nil;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    NSInteger nextTag = textField.tag + 1;
+    // Try to find next responder
+    UIResponder* nextResponder = [textField.superview viewWithTag:nextTag];
+    if (nextResponder) {
+        // Found next responder, so set it.
+        [nextResponder becomeFirstResponder];
+    } else {
+        // Not found, so remove keyboard.
+        [textField resignFirstResponder];
+        //[self keyboardWillBeHidden:nil];
+        
+        [self btnGoClicked:nil];
+        
+    }
+    return NO;
+}
+
+
+
 -(void)tapGuestureFired:(UITapGestureRecognizer *)tap{
     [self.view removeGestureRecognizer:tapGuesture];
     tapGuesture=nil;
@@ -229,31 +271,70 @@
 
 #pragma mark - Call web service
 
--(void)webAPIToLogin{
-    UserWebServiceClient *service=[[UserWebServiceClient alloc]init];
-    //[service signUpUserWithName:@"" emailId:self.txtEmailID.text password:self.txtPassword.text deviceToken:nil target:self onSuccess:@selector(webResponseDidSuccess:) onFailure:@selector(webResponseDidFail:)];
-    
-    [service signInWithEmailId:self.txtEmail.text  password:self.txtPassword.text deviceToken:nil target:self onSuccess:@selector(webResponseDidSuccess:) onFailure:@selector(webResponseDidFail:)];
+-(void)webAPIForgotPassword:(NSString *)strEmail{
+    self.userWebAPI = [[UserService alloc]init];
+    self.userWebAPI.tag = 2;
+    self.userWebAPI.delegate = self;
+    [self.userWebAPI forgotPasswordWithEmailID:strEmail];
     
     [[HUD sharedInstance]showHUD:self.view];
 }
 
--(void)webResponseDidSuccess:(Response *)response{
-    [[HUD sharedInstance]hideHUD:self.view];
-    [[CommansUtility sharedInstance]saveUserObject:(UserModel *)response.responseObject key:@"loggedInUser"];
-    [self performSegueWithIdentifier:segueMakeProfile sender:self];
-   // [self showErrorMessage:@"User registered successfully"];
-   // [self dismissViewControllerAnimated:YES completion:nil];
+
+-(void)webAPIToLogin{
+    self.userWebAPI = [[UserService alloc]init];
+    self.userWebAPI.delegate=self;
+    [self.userWebAPI loginWithUserName:self.txtEmail.text andPassword:self.txtPassword.text];
     
+    [[HUD sharedInstance]showHUD:self.view];
 }
 
--(void)webResponseDidFail:(Response *)response{
+-(void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
     [[HUD sharedInstance]hideHUD:self.view];
-    [self showErrorMessage:@"Error in log in...!!!"];
+    UserService *service = (UserService *)serviceRequest;
+    
+    if(service.tag == 0){
+        if(responseData.count>0){
+            UserModel *model = (UserModel *)[responseData objectAtIndex:0];
+            
+            [[CommansUtility sharedInstance]saveUserObject:model key:@"loggedInUser"];
+            
+            if(model.strClientUserName.length>0){
+                [self performSegueWithIdentifier:@"segueTabBarFromLogin" sender:self];
+            }
+            else{
+                [self performSegueWithIdentifier:segueMakeProfile sender:self];
+            }
+        }
+    }
+    else if (service.tag ==2){
+        [[HUD sharedInstance]hideHUD:self.view];
+        [[[UIAlertView alloc]initWithTitle:@"Thank you" message:@"Email is valid. Please check your inbox" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+    }
 }
+
+-(void)request:(id)serviceRequest didFailWithError:(NSError *)error{
+    UserService *service = (UserService *)serviceRequest;
+    
+    if(service.tag == 0){
+        [[HUD sharedInstance]hideHUD:self.view];
+        [self showErrorMessage:error.localizedDescription];
+    }
+    else if (service.tag ==2){
+        [[HUD sharedInstance]hideHUD:self.view];
+        [self showErrorMessage:@"Not able to send reset link"];
+    }
+}
+
+
+- (IBAction)btnFBLoginClicked:(id)sender {
+    [[[UIAlertView alloc]initWithTitle:@"Coming soon" message:@"Facebook login functionality will be available in later release !" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+
+}
+
 
 -(void)showErrorMessage:(NSString *)message{
-    [[[UIAlertView alloc]initWithTitle:@"UrbanEx" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+    [[[UIAlertView alloc]initWithTitle:@"ERROR" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
 }
 
 

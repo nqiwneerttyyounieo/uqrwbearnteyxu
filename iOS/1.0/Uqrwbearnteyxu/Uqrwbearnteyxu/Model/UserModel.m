@@ -15,6 +15,11 @@
     [encoder encodeObject:self.strUserId forKey:@"userid"];
     [encoder encodeObject:self.strUserName forKey:@"username"];
     [encoder encodeObject:self.strAuthToken forKey:@"authtoken"];
+    [encoder encodeObject:self.strEmailID forKey:@"emailID"];
+    [encoder encodeObject:self.strClientUserName forKey:@"clientUserName"];
+    [encoder encodeObject:self.strProfileURLThumb forKey:@"thumbURL"];
+    [encoder encodeObject:self.strProfileURL forKey:@"profileURL"];
+
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -23,6 +28,11 @@
         self.strUserId = [decoder decodeObjectForKey:@"userid"];
         self.strUserName = [decoder decodeObjectForKey:@"username"];
         self.strAuthToken = [decoder decodeObjectForKey:@"authtoken"];
+        self.strEmailID = [decoder decodeObjectForKey:@"emailID"];
+        self.strClientUserName = [decoder decodeObjectForKey:@"clientUserName"];
+        self.strProfileURL = [decoder decodeObjectForKey:@"profileURL"];
+        self.strProfileURLThumb = [decoder decodeObjectForKey:@"thumbURL"];
+
     }
     return self;
 }

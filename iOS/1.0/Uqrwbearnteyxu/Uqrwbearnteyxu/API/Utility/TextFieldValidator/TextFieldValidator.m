@@ -281,6 +281,7 @@
     popUp=[[IQPopUp alloc] initWithFrame:CGRectZero];
     popUp.strMsg=msg;
     popUp.popUpColor=popUpColor;
+    
     popUp.showOnRect=[self convertRect:self.rightView.frame toView:presentInView];
     popUp.fieldFrame=[self.superview convertRect:self.frame toView:presentInView];
     popUp.backgroundColor=[UIColor clearColor];

@@ -87,5 +87,11 @@
     return self.result;
 }
 
-
+- (Response *)successForgotPassword:(NSDictionary *)data{
+    NSDictionary *dict = data[@"Data"];
+    
+    self.result.responseObject = dict;
+    
+    return self.result;
+}
 @end

@@ -17,7 +17,9 @@
 enum menus{
     menuProfile,
     menuSport,
-    menuSetting
+    menuSetting,
+    menuLogOut,
+    menuHelp
 };
 @protocol RightMenuViewControllerDelegate <NSObject>
 

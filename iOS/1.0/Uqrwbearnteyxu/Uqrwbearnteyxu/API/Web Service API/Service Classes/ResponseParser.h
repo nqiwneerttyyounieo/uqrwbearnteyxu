@@ -50,4 +50,8 @@
 // OTHER
 - (Response *)sucessResponseParser:(NSDictionary *)data;
 
+
+- (Response *)successForgotPassword:(NSDictionary *)data;
+
+
 @end

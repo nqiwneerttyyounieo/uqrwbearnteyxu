@@ -10,6 +10,8 @@
 #import "DCPathButton.h"
 #import "RightMenuViewController.h"
 #import "ProfileViewController.h"
+#import "CommansUtility.h"
+#import "AskForLoginViewController.h"
 
 
 @interface TabbarViewController ()<DCPathButtonDelegate,UITabBarControllerDelegate,RightMenuViewControllerDelegate>
@@ -20,7 +22,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.hidesBackButton = YES;
+
+    RightMenuViewController *rightMenu =  (RightMenuViewController *)   [SlideNavigationController sharedInstance].rightMenu ;
+    
+    rightMenu.delegate = self;
+    
     //self.delegate=self;
+    /*
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
                                                              bundle: nil];
     
@@ -32,31 +41,90 @@
     [SlideNavigationController sharedInstance].rightMenu = rightMenu;
     [SlideNavigationController sharedInstance].menuRevealAnimationDuration = .18;
 
+    */
     
     [[[[self.tabBarController tabBar]items]objectAtIndex:0]setEnabled:FALSE];
     [[[[[self tabBarController] tabBar] items] objectAtIndex:0] setBadgeValue:@"12"];
     
+    self.tabBar.tintColor= [UIColor colorWithRed:148/255 green:249.0/255 blue:253.255 alpha:1];
+
+
+    
+    
     [self configureDCPathButton];
     // Do any additional setup after loading the view.
    
+    
+    UIImage *selectedImage0 = [UIImage imageNamed:@"tab2.png"];
+    UIImage *unselectedImage0 = [UIImage imageNamed:@"tab2.png"];
+    
+    //UITabBarItem *item0 = [self.tabBar.items objectAtIndex:0];
+    
+    //[item0 setFinishedSelectedImage:selectedImage0 withFinishedUnselectedImage:unselectedImage0];
+    
+   /* [item0 setImage:[[UIImage imageNamed:@"tab2.png"]
+                                 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];*/
+    
+    /*
+    UITabBar *tabBar = self.tabBar;
+    
+    UITabBarItem *item0 = [tabBar.items objectAtIndex:0];
+    UITabBarItem *item1 = [tabBar.items objectAtIndex:1];
+    UITabBarItem *item2 = [tabBar.items objectAtIndex:2];
+    UITabBarItem *item3 = [tabBar.items objectAtIndex:3];
+    
+    [item0 setFinishedSelectedImage:[UIImage imageNamed:@"tab1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"tab1.png"]];
+    [item0 setImageInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+
+    
+    [item1 setFinishedSelectedImage:[UIImage imageNamed:@"tab2.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"tab2.png"]];
+    
+    [item1 setImageInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [item2 setFinishedSelectedImage:[UIImage imageNamed:@"tab3.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"tab3.png"]];
+    [item2 setImageInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [item3 setFinishedSelectedImage:[UIImage imageNamed:@"tab4.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"tab4.png"]];
+    [item3 setImageInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    */
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+
 }
 
 -(void)rightMenuVC:(id)sender didSelectMenu:(enum menus)selectedMenu{
-    UINavigationController *nav = self.selectedViewController;
-    
-    UIViewController *controller = [nav topViewController];
-    if([controller isKindOfClass:[ProfileViewController class]]){
-        return;
-    }
-    
-    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
-                                                             bundle: nil];
-    
-    UIViewController *vc ;
-    vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    if(selectedMenu == menuLogOut){
+        [[CommansUtility sharedInstance]saveUserObject:nil key:@"loggedInUser"];
 
-    
-    [nav pushViewController:vc animated:YES];
+        UIViewController  *rootController =(AskForLoginViewController*)[[                    [[UIApplication sharedApplication]delegate] window] rootViewController];
+        if([rootController isKindOfClass:[AskForLoginViewController class]]){
+            [self.navigationController popToRootViewControllerAnimated:YES];
+        }
+        else{
+            AskForLoginViewController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"AskForLoginViewController"];
+            
+            [[SlideNavigationController sharedInstance] setViewControllers:[NSArray arrayWithObjects:tabBarVC, nil]];
+        }
+        
+    }
+    else if (selectedMenu == menuProfile){
+        UINavigationController *nav = self.selectedViewController;
+        
+        UIViewController *controller = [nav topViewController];
+        if([controller isKindOfClass:[ProfileViewController class]]){
+            return;
+        }
+        
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
+                                                                 bundle: nil];
+        
+        UIViewController *vc ;
+        vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+        
+        
+        
+        [nav pushViewController:vc animated:YES];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -78,26 +146,26 @@
 {
     // Configure center button
     //
-    DCPathButton *dcPathButton = [[DCPathButton alloc]initWithCenterImage:[UIImage imageNamed:@"chooser-button-tab"]
-                                                         highlightedImage:[UIImage imageNamed:@"chooser-button-tab-highlighted"]];
+    DCPathButton *dcPathButton = [[DCPathButton alloc]initWithCenterImage:[UIImage imageNamed:@"tab3.png"]
+                                                         highlightedImage:[UIImage imageNamed:@"tab3.png"]];
     dcPathButton.delegate = self;
     
     // Configure item buttons
     //
-    DCPathItemButton *itemButton_1 = [[DCPathItemButton alloc]initWithImage:[UIImage imageNamed:@"chooser-moment-icon-music"]
-                                                           highlightedImage:[UIImage imageNamed:@"chooser-moment-icon-music-highlighted"]
-                                                            backgroundImage:[UIImage imageNamed:@"chooser-moment-button"]
-                                                 backgroundHighlightedImage:[UIImage imageNamed:@"chooser-moment-button-highlighted"]];
+    DCPathItemButton *itemButton_1 = [[DCPathItemButton alloc]initWithImage:[UIImage imageNamed:@"tab-sub1.png"]
+                                                           highlightedImage:[UIImage imageNamed:@"tab-sub1.png"]
+                                                            backgroundImage:[UIImage imageNamed:@"tab-sub1.png"]
+                                                 backgroundHighlightedImage:[UIImage imageNamed:@"tab-sub1.png"]];
     
-    DCPathItemButton *itemButton_2 = [[DCPathItemButton alloc]initWithImage:[UIImage imageNamed:@"chooser-moment-icon-place"]
-                                                           highlightedImage:[UIImage imageNamed:@"chooser-moment-icon-place-highlighted"]
-                                                            backgroundImage:[UIImage imageNamed:@"chooser-moment-button"]
-                                                 backgroundHighlightedImage:[UIImage imageNamed:@"chooser-moment-button-highlighted"]];
+    DCPathItemButton *itemButton_2 = [[DCPathItemButton alloc]initWithImage:[UIImage imageNamed:@"tab-sub2.png"]
+                                                           highlightedImage:[UIImage imageNamed:@"tab-sub2.png"]
+                                                            backgroundImage:[UIImage imageNamed:@"tab-sub2.png"]
+                                                 backgroundHighlightedImage:[UIImage imageNamed:@"tab-sub2.png"]];
     
-    DCPathItemButton *itemButton_3 = [[DCPathItemButton alloc]initWithImage:[UIImage imageNamed:@"chooser-moment-icon-camera"]
-                                                           highlightedImage:[UIImage imageNamed:@"chooser-moment-icon-camera-highlighted"]
-                                                            backgroundImage:[UIImage imageNamed:@"chooser-moment-button"]
-                                                 backgroundHighlightedImage:[UIImage imageNamed:@"chooser-moment-button-highlighted"]];
+    DCPathItemButton *itemButton_3 = [[DCPathItemButton alloc]initWithImage:[UIImage imageNamed:@"tab-sub3.png"]
+                                                           highlightedImage:[UIImage imageNamed:@"tab-sub3.png"]
+                                                            backgroundImage:[UIImage imageNamed:@"tab-sub3.png"]
+                                                 backgroundHighlightedImage:[UIImage imageNamed:@"tab-sub3.png"]];
     
     
     // Add the item button into the center button
@@ -109,18 +177,18 @@
     
     // Change the bloom radius, default is 105.0f
     //
-    dcPathButton.bloomRadius = 90;
+    dcPathButton.bloomRadius = 70;
     
     // Change the DCButton's center
     //
     //dcPathButton.frame = CGRectMake(0, 0, 60, 60);
 
-    dcPathButton.dcButtonCenter = CGPointMake(self.view.bounds.size.width / 2, self.view.bounds.size.height - 25.5f);
+    dcPathButton.dcButtonCenter = CGPointMake(self.view.bounds.size.width / 2, self.view.bounds.size.height - 30.5f);
     
     // Setting the DCButton appearance
     //
     dcPathButton.allowSounds = YES;
-    dcPathButton.allowCenterButtonRotation = YES;
+    dcPathButton.allowCenterButtonRotation = NO;
     
     dcPathButton.bottomViewColor = [UIColor grayColor];
     
@@ -141,6 +209,13 @@
     return YES;
 }
 
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    //unselected icon tint color
+    [[UIView appearanceWhenContainedIn:[UITabBar class], nil] setTintColor:[UIColor redColor]];
+    
+    //selected tint color
+    [[UITabBar appearance] setTintColor:[UIColor greenColor]];
+}
 
 
 #pragma mark - DCPathButton Delegate

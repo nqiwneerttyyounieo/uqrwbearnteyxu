@@ -20,6 +20,21 @@
     [super viewDidLoad];
     [self setUp];
     // Do any additional setup after loading the view.
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden =YES;
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden =NO;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,5 +72,16 @@
     
     [view.layer addSublayer:layer];
 }
+
+- (IBAction)btnFbLoginClicked:(id)sender {
+    [[[UIAlertView alloc]initWithTitle:@"Coming soon" message:@"Facebook login functionality will be available in later release !" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+    
+}
+
+
+-(void)showErrorMessage:(NSString *)message{
+    [[[UIAlertView alloc]initWithTitle:@"UrbanEx" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+}
+
 
 @end

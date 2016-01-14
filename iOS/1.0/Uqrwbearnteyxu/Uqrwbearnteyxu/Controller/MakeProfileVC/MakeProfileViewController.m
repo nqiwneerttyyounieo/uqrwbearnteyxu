@@ -12,9 +12,12 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "AADatePicker.h"
 #import "CommansUtility.h"
+#import "UserService.h"
+
+#import "MBProgressHUD.h"
 
 
-@interface MakeProfileViewController ()
+@interface MakeProfileViewController ()<WebServiceDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *imgviewProfile;
 @property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (strong, nonatomic) IBOutlet UIButton *btnMale;
@@ -24,6 +27,11 @@
 
 @property   (strong,nonatomic)UIImagePickerController *cameraPicker;
 @property   (strong,nonatomic)UIImagePickerController *imagePicker;
+
+@property   (strong,nonatomic)UserService *userWebAPI;
+
+
+
 @end
 
 @implementation MakeProfileViewController{
@@ -32,15 +40,23 @@
     UITextField *activeTextfield;
     
     UITapGestureRecognizer *tapGuesture;
+    UILongPressGestureRecognizer *longPress;
+
+    
+    UserModel *loggedInUser;
+    NSString *strGender;
+    
     
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUp];
-    UserModel *model = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
+    loggedInUser = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
 
-    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
     // Do any additional setup after loading the view.
 }
 
@@ -59,6 +75,17 @@
 }
 */
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden =YES;
+    
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.hidden =NO;
+}
+
 
 #pragma mark - SetUp
 #pragma mark
@@ -69,6 +96,11 @@
     [self addTapGuesture];
     [self setupDatePicker];
     [self leftPanelView:self.txtUserName withImage:[UIImage imageNamed:@"person-icon.png"]];
+    strGender= @"true";
+    
+    NSAttributedString *strEmail = [[NSAttributedString alloc] initWithString:@"UserName" attributes:@{ NSForegroundColorAttributeName : [UIColor lightGrayColor] }];
+    self.txtUserName.attributedPlaceholder = strEmail;
+    
 
 }
 -(void)addTapGuestureForKeyboard{
@@ -92,6 +124,18 @@
     self.datePicker.datePickerMode = UIDatePickerModeDate;
   
     [self.datePicker addTarget:self action:@selector(SetDatePickerTime:) forControlEvents:UIControlEventValueChanged];
+
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDate *currentDate = [NSDate date];
+    NSDateComponents *comps = [[NSDateComponents alloc] init];
+    [comps setYear:30];
+    NSDate *maxDate = [calendar dateByAddingComponents:comps toDate:currentDate options:0];
+    [comps setYear:-50];
+    NSDate *minDate = [calendar dateByAddingComponents:comps toDate:currentDate options:0];
+    
+    [self.datePicker setMaximumDate:currentDate];
+    [self.datePicker setMinimumDate:minDate];
+    
     
 //    [self.datePicker setValue:[UIColor colorWithRed:70/255.0f green:161/255.0f blue:174/255.0f alpha:1.0f] forKeyPath:@"textColor"];
 
@@ -158,6 +202,13 @@
     [self.imgviewProfile addGestureRecognizer:tapGuesture];
 }
 
+-(void)addLongGuesture{
+    longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(handleLongPress:)];
+
+    self.imgviewProfile.userInteractionEnabled =YES;
+    [self.imgviewProfile addGestureRecognizer:longPress];
+}
+
 -(void)leftPanelView:(UITextField *)txt withImage:(UIImage *)image{
     UIView *panel =[[UIView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)];
     UIImageView *imageview=[[UIImageView alloc]initWithFrame:panel.bounds];
@@ -183,6 +234,19 @@
 }
 -(void)tapGuestureForProfile:(UITapGestureRecognizer *)guesture{
     [self setUpActionSheet];
+}
+
+-  (void)handleLongPress:(UILongPressGestureRecognizer*)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"UIGestureRecognizerStateEnded");
+        [self setUpActionSheet];
+
+        //Do Whatever You want on End of Gesture
+    }
+    else if (sender.state == UIGestureRecognizerStateBegan){
+        NSLog(@"UIGestureRecognizerStateBegan.");
+        //Do Whatever You want on Began of Gesture
+    }
 }
 
 
@@ -239,6 +303,8 @@
         
         
         self.cameraPicker.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
+        self.cameraPicker.allowsEditing = YES;
+        
         
         [self presentViewController:self.cameraPicker animated:YES completion:nil];
     }
@@ -252,6 +318,7 @@
     self.imagePicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     
     self.imagePicker.mediaTypes =[[NSArray alloc] initWithObjects: (NSString *) kUTTypeImage, nil];
+    self.imagePicker.allowsEditing = YES;
     [self presentViewController:self.imagePicker animated:YES completion:nil];
     
 }
@@ -259,17 +326,23 @@
 - (void) imagePickerController:(UIImagePickerController *)aPicker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     
+    
     NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
     NSURL *refURL = [info valueForKey:UIImagePickerControllerReferenceURL];
 
     if (CFStringCompare ((CFStringRef) mediaType, kUTTypeImage, 0)
         == kCFCompareEqualTo)
     {
-        UIImage *aImage = (UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage];
+        UIImage *aImage = (UIImage *)[info objectForKey:UIImagePickerControllerEditedImage];
         self.imgviewProfile.contentMode = UIViewContentModeScaleToFill;
         
         self.imgviewProfile.image= aImage;
         
+        [self.imgviewProfile removeGestureRecognizer:tapGuesture];
+        [self.imgviewProfile removeGestureRecognizer:longPress];
+        
+        [self addLongGuesture];
+
     }
     
     [aPicker dismissViewControllerAnimated:YES completion:nil];
@@ -277,8 +350,93 @@
 }
 
 #pragma mark - Button delegate
+- (IBAction)btnGoClicked:(id)sender {
+ 
+    if([self.txtUserName validate]){
+    
+        NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+        [formatter setDateFormat:@"MM/dd/YYYY"];
+        NSString *selectedDate = [formatter stringFromDate:self.datePicker.date];
+        
+        UserModel *model= [[UserModel alloc]init];
+        model.strBirthdate = selectedDate;
+        model.strEmailID = loggedInUser.strEmailID;
+        model.strGender = strGender;
+        //model.strUserId = @"Rahul";
+        model.imgProfile = self.imgviewProfile.image;
+        model.strUserName = self.txtUserName.text;
+        
+        self.userWebAPI = [[UserService alloc]init];
+        self.userWebAPI.delegate=self;
+        [self.userWebAPI makeProfileWithUserModel:model];
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    
+}
 
 - (IBAction)btnLogoutClicked:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+- (IBAction)btnGenderClicked:(id)sender {
+    UIButton *btn = (UIButton *)sender;
+    if(btn.tag==0){
+        [btn setSelected:YES];
+        [self.btnFemale setSelected:NO];
+        
+        strGender = @"true";
+    }
+    else if(btn.tag==1){
+        [btn setSelected:YES];
+        [self.btnMale setSelected:NO];
+        strGender = @"false";
+    }
+}
+
+#pragma mark - Web service response
+
+- (void)request:(id)serviceRequest didFailWithError:(NSError *)error{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self showErrorMessage:error.localizedDescription];
+    });
+}
+- (void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+
+        UserModel *model = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
+        if(responseData.count>0){
+            UserModel *uModel = (UserModel *) responseData[0];
+            model.strProfileURLThumb = uModel.strProfileURLThumb;
+            model.strProfileURL = uModel.strProfileURL;
+            model.strEmailID = uModel.strEmailID;
+            model.strClientUserName = uModel.strClientUserName;
+
+        }
+        
+        [[CommansUtility sharedInstance]saveUserObject:model key:@"loggedInUser"];
+        
+        [self performSegueWithIdentifier:@"segueTabbar" sender:self];
+        
+        /*[[[self presentingViewController] presentingViewController] dismissViewControllerAnimated:NO completion:^{
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard" bundle:nil];
+            
+            UIViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"SlideNavigationController"];
+            
+            [UIApplication sharedApplication].keyWindow.rootViewController = viewController;
+            [ [UIApplication sharedApplication].keyWindow makeKeyAndVisible];
+        }];*/
+
+    
+    });
+    
+}
+
+-(void)showErrorMessage:(NSString *)message{
+    [[[UIAlertView alloc]initWithTitle:@"UrbanEx" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+}
+
+
+
 @end

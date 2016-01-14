@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CustomDatePicker.h"
 
 @interface MakeProfileViewController : UIViewController
+@property(nonatomic,weak)IBOutlet CustomDatePicker *customDatePicker;
 
 @end

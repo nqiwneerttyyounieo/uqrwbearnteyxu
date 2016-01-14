@@ -7,10 +7,11 @@
 //
 
 #import "AppDelegate.h"
-#import "WebServiceFramework.h"
-#import "UserWebServiceClient.h"
 #import "RightMenuViewController.h"
 #import "SlideNavigationController.h"
+#import "UserModel.h"
+#import "CommansUtility.h"
+#import "TabbarViewController.h"
 
 @interface AppDelegate ()
 
@@ -22,10 +23,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    UserWebServiceClient *service=[[UserWebServiceClient alloc]init];
-   // [service signInWithEmailId:@"rahul@gmai.com" password:@"password" deviceToken:nil target:service onSuccess:nil onFailure:nil];
-    
-   // [service signUpUserWithName:@"" emailId:@"rahul@gmai.com" password:@"Pere@123" deviceToken:nil target:self onSuccess:nil onFailure:nil];
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
                                                              bundle: nil];
 
@@ -35,9 +32,27 @@
     [SlideNavigationController sharedInstance].rightMenu = rightMenu;
     [SlideNavigationController sharedInstance].menuRevealAnimationDuration = .18;
     
-    
+
+    UserModel *uModel = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
+    if(uModel && uModel.strClientUserName.length){
+        NSLog(@"User was logged in");
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard" bundle:nil];
+        
+        //SlideNavigationController *sViewController = [storyboard instantiateViewControllerWithIdentifier:@"SlideNavigationController"];
+        
+        TabbarViewController *tabBarVC = [storyboard instantiateViewControllerWithIdentifier:@"TabbarViewController"];
+
+        [[SlideNavigationController sharedInstance] setViewControllers:[NSArray arrayWithObjects:tabBarVC, nil]];
+        
+        [UIApplication sharedApplication].keyWindow.rootViewController =     [SlideNavigationController sharedInstance];
+        [[UIApplication sharedApplication].keyWindow makeKeyAndVisible];
+        
+        
+        
+    }
     return YES;
 }
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

@@ -10,6 +10,7 @@
 #import "WebServiceChannel.h"
 #import "WebServiceConstants.h"
 #import "ResponseParser.h"
+#import "UserModel.h"
 
 NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
 {
@@ -66,6 +67,26 @@ NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
     [channel requestWithTag:USER_WEB_SERVICE_TAG_FORGOT_PASSWORD postData:parameters toPath:WS_API_FORGOT_PASSWORD target:self onSuccess:@selector(request:didFinishWithResponse:) onFailure:@selector(request:didFailWithError:)];
 }
 
+- (void)updateUser:(UserModel *)userModel target:(id)target onSuccess:(SEL)success onFailure:(SEL)failure{
+    [self setCallbakToListener:target onSuccess:success onFailure:failure];
+
+    NSDictionary *parameters = @{
+                                 @"Email" : userModel.strEmailID.length?userModel.strEmailID:@"",
+                                 @"FirstName" : @"",
+                                 @"LastName" : @"",
+                                 @"Birthdate" : userModel.strBirthdate.length?userModel.strBirthdate:@"",
+                                 @"Gender" : @"true",
+                                 @"UserName" : userModel.strUserName.length?userModel.strUserName:@"",
+                                 @"Residence" : userModel.strRecidence.length?userModel.strRecidence:@""
+                                 };
+
+    //[channel requestWithTag:USER_WEB_SERVICE_TAG_USER_UPDATE postData:parameters toPath:WS_API_FORGOT_PASSWORD target:self onSuccess:@selector(request:didFinishWithResponse:) onFailure:@selector(request:didFailWithError:)];
+
+    NSData *imageData = UIImageJPEGRepresentation(userModel.imgProfile, 1);
+    
+    [channel requestWithTag:USER_WEB_SERVICE_TAG_USER_UPDATE postData:parameters toPath:WS_API_UPDATE_PROFILE file:imageData target:self onSuccess:@selector(request:didFinishWithResponse:) onFailure:@selector(request:didFailWithError:)];
+    
+}
 #pragma mark - Web service delegates
 - (void)request:(id)asynchroniousRequest didSignInFinishWithResponse:(NSData *)responseData{
     NSError *error = nil;
@@ -74,13 +95,23 @@ NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
     NSLog(@"json %@ %@",json,error);
     if(!error)
     {
-        ResponseParser *parser = [[ResponseParser alloc] init];
-        id parsedData = [parser userWebClientSignInParser:json];
+        NSString *strError = [json valueForKey:@"error"];
         
+        if(strError.length){
+            NSMutableDictionary *dicionary = [[NSMutableDictionary alloc]init];
+            [dicionary setValue:strError forKey:NSLocalizedDescriptionKey];
+           NSError *errorInLogin = [NSError errorWithDomain:WS_DOMAIN_JSON_ERROR code:WS_RANDOM_CUSTOM_ERROR_CODE_BAD_RESPONSE userInfo:dicionary];
+            //[errorInLogin setValue:strError forKey:NSLocalizedDescriptionKey];
+            
+            [self failureCallback:errorInLogin];
+
+        }
+        else{
+            ResponseParser *parser = [[ResponseParser alloc] init];
+            id parsedData = [parser userWebClientSignInParser:json];
         
-
-        ((void (*) (id, SEL, id)) [listener methodForSelector:callbackForSuccess])(listener, callbackForSuccess, parsedData);
-
+            ((void (*) (id, SEL, id)) [listener methodForSelector:callbackForSuccess])(listener, callbackForSuccess, parsedData);
+        }
     }
 }
 - (void)request:(id)asynchroniousRequest didFinishWithResponse:(NSData *)responseData
@@ -105,7 +136,10 @@ NS_ENUM(NSInteger, USER_WEB_SERVICE_TAG)
                 }
                     break;
 
-                case USER_WEB_SERVICE_TAG_FORGOT_PASSWORD:
+                case USER_WEB_SERVICE_TAG_FORGOT_PASSWORD:{
+                    parsedData = [parser successForgotPassword:json];
+                    break;
+                }
                 case USER_WEB_SERVICE_TAG_UPDATE_DEVICE_TOKEN:
                 {
                     parsedData = [parser sucessResponseParser:json];

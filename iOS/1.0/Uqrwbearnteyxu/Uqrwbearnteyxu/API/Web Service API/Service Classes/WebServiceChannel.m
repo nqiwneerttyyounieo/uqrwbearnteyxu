@@ -10,7 +10,9 @@
 #import "AsynchroniousRequest.h"
 #import "WebServiceConstants.h"
 
-static NSString *SERVICE_BASE_URL = @"http://uxwebapi.twigsoftwares.com/";
+//static NSString *SERVICE_BASE_URL = @"http://uxwebapi.twigsoftwares.com/";
+static NSString *SERVICE_BASE_URL = @"http://5.189.161.31/";
+
 
 @implementation WebServiceChannel
 

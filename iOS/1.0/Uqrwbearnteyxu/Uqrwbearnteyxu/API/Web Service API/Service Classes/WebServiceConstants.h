@@ -18,8 +18,8 @@
 
 #define WS_API_LOGIN @"token?"
 #define WS_API_REGISTER @"api/Account/Register"
-#define WS_API_FORGOT_PASSWORD @"user/forgotpassword"
-#define WS_API_UPDATE_PROFILE @"user/updateUserProfile"
+#define WS_API_FORGOT_PASSWORD @"/api/Account/ForgotPassword"
+#define WS_API_UPDATE_PROFILE @"api/Account/UpdateUser"
 #define WS_API_UPDATE_DEVICE_TOKEN  @"user/updateDeviceToken"
 
 #define WS_API_GET_TOP_BROADCAST @"user/getTopBroadcast"

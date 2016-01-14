@@ -10,21 +10,58 @@
 #import "SlideNavigationController.h"
 #import "VIewUtility.h"
 #import "PPImageScrollingTableViewCell.h"
+#import "UserModel.h"
+#import "CommansUtility.h"
+#import "BlockOperationWithIdentifier.h"
 
 @interface ProfileViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableview;
+@property (nonatomic, strong) NSCache *eventImageCache;
+@property (nonatomic, strong) NSOperationQueue *eventImageOperationQueue;
+
 
 @end
 
-@implementation ProfileViewController
+@implementation ProfileViewController{
+    UserModel *loggedInUser;
+
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    loggedInUser = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
+
     self.tabBarController.navigationController.navigationBar.hidden =  YES;
     [self.tableview registerClass:[PPImageScrollingTableViewCell class] forCellReuseIdentifier:@"cellImageScolling"];
 
     // Do any additional setup after loading the view.
+    
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
+    
+    [self setUpBackButton];
+    self.eventImageCache=[[NSCache alloc]init];
+    self.eventImageOperationQueue = [[NSOperationQueue alloc]init];
+    self.eventImageOperationQueue.maxConcurrentOperationCount = 2;
+
 }
+
+-(void)setUpBackButton{
+    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImage *backBtnImage = [UIImage imageNamed:@"backCpy.png"];
+    [backBtn setBackgroundImage:backBtnImage forState:UIControlStateNormal];
+    [backBtn addTarget:self action:@selector(backButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+    backBtn.frame = CGRectMake(0, 0, 25, 25);
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithCustomView:backBtn] ;
+    self.navigationItem.leftBarButtonItem = backButton;
+}
+
+- (void)backButtonClicked
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
@@ -58,19 +95,60 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 0){
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"friendsProfileCell"];
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"OwnProfileCell"];
         
-        UIImageView *imgviewProfile = (UIImageView *)[cell viewWithTag:100];
-        UILabel *lblProfileName = (UILabel *)[cell viewWithTag:101];
-        UILabel *lblProfileStatus = (UILabel *)[cell viewWithTag:102];
-        UIButton *btnFriendshipStatus = (UIButton *)[cell viewWithTag:103];
-        UIButton *btnChat = (UIButton *)[cell viewWithTag:104];
-        UIButton *btnMeetup = (UIButton *)[cell viewWithTag:105];
+        UIImageView *imgviewProfile = (UIImageView *)[cell viewWithTag:200];
+        UILabel *lblProfileName = (UILabel *)[cell viewWithTag:201];
+        UILabel *lblProfileStatus = (UILabel *)[cell viewWithTag:202];
+        UIButton *btnFriendshipStatus = (UIButton *)[cell viewWithTag:203];
+        UIButton *btnChat = (UIButton *)[cell viewWithTag:204];
+        UIButton *btnMeetup = (UIButton *)[cell viewWithTag:205];
 
         [VIewUtility addHexagoneShapeMaskFor:imgviewProfile];
-        lblProfileName.text = @"Rahul Mane";
-        lblProfileStatus.text = @"Yoo yoo I am swimmer";
+        lblProfileName.text = loggedInUser.strClientUserName;
+        lblProfileStatus.text = loggedInUser.strEmailID;
         [btnFriendshipStatus addTarget:self action:@selector(btnFriendshipStatusClicked:) forControlEvents:UIControlEventTouchDown];
+        
+        
+        
+        if(loggedInUser.strProfileURLThumb.length==0){
+            
+        }
+        UIImage *imageFromCache = [self.eventImageCache objectForKey:[NSString stringWithFormat:@"%@",loggedInUser.strUserId]];
+        if (imageFromCache) {
+            imgviewProfile.image=imageFromCache;
+        }else{
+            
+            imgviewProfile.image = nil;//user a placeholder later
+            BlockOperationWithIdentifier *operation = [BlockOperationWithIdentifier blockOperationWithBlock:^{
+                
+                NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:loggedInUser.strProfileURL]];
+                
+                UIImage *img = [UIImage imageWithData:imageData];
+                if (img) {
+                    [self.eventImageCache setObject:img forKey:[NSString stringWithFormat:@"%@",loggedInUser.strProfileURL]];
+                }
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    imgviewProfile.layer.cornerRadius=3;
+                    imgviewProfile.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                    imgviewProfile.layer.borderWidth=0.75;
+                    imgviewProfile.image = img;
+                    
+                    CATransition *transition = [CATransition animation];
+                    transition.duration = 0.75f;
+                    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                    transition.type = kCATransitionFade;
+                    
+                    [imgviewProfile.layer addAnimation:transition forKey:nil];
+                    imgviewProfile.contentMode=UIViewContentModeScaleAspectFit;
+                    imgviewProfile.clipsToBounds = YES;
+                }];
+            }];
+            operation.queuePriority = NSOperationQueuePriorityNormal;
+            operation.identifier=loggedInUser.strProfileURL;
+            [self.eventImageOperationQueue addOperation:operation];
+        }
+        
         
         
         return cell;
@@ -84,7 +162,7 @@
     else if(indexPath.section ==2){
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellFriendStatus"];
         UILabel *lblProfileName = (UILabel *)[cell viewWithTag:400];
-        lblProfileName.text = @"Rahul a das dadjasds adas ndajsndjas dasjd asjd jasdnasd Rahudalmd asdsa das dsad jasd jasda dd as dsad asd as a?d asdas das?";
+        lblProfileName.text = @"Apple leads the world in innovation with iPhone, iPad, Mac, Apple Watch, iOS, OS X, watchOS and more. Visit the site to learn, buy and get support.";
         lblProfileName.preferredMaxLayoutWidth = 250;
         return cell;
         
@@ -96,10 +174,10 @@
                                @[
                                    @{ @"name":@"icon29.png", @"title":@"A-0"},
                                    @{ @"name":@"icon29.png", @"title":@"A-1"},
-                                   @{ @"name":@"icon29.png", @"title":@"A-2"},
-                                   @{ @"name":@"icon29.png", @"title":@"A-3"},
-                                   @{ @"name":@"icon29.png", @"title":@"A-4"},
-                                   @{ @"name":@"icon29.png", @"title":@"A-5"}
+                                   @{ @"name":@"", @"title":@"A-2"},
+                                   @{ @"name":@"", @"title":@"A-3"},
+                                   @{ @"name":@"", @"title":@"A-4"},
+                                   @{ @"name":@"", @"title":@"A-5"}
                                    
                                    ]
                            }
