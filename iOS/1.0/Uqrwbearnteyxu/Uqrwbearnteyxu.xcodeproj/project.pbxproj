@@ -76,6 +76,11 @@
 		8B3AA4201C43F56D00C025F9 /* female-iconSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B3AA41E1C43F56D00C025F9 /* female-iconSelected@2x.png */; };
 		8B3AA4211C43F56D00C025F9 /* male-iconSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B3AA41F1C43F56D00C025F9 /* male-iconSelected@2x.png */; };
 		8B3AA4241C43FE7A00C025F9 /* FriendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B3AA4231C43FE7A00C025F9 /* FriendModel.m */; };
+		8B4C0D3A1C4BB52F00FCE12C /* PinSquare@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D351C4BB52F00FCE12C /* PinSquare@2x.png */; };
+		8B4C0D3B1C4BB52F00FCE12C /* PinSquareBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D361C4BB52F00FCE12C /* PinSquareBlue@2x.png */; };
+		8B4C0D3C1C4BB52F00FCE12C /* PinSquareGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D371C4BB52F00FCE12C /* PinSquareGray@2x.png */; };
+		8B4C0D3D1C4BB52F00FCE12C /* RoundPinBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D381C4BB52F00FCE12C /* RoundPinBlue@2x.png */; };
+		8B4C0D3E1C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D391C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png */; };
 		8BC66CA41C4751D3002D61FF /* upArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8BC66CA31C4751D3002D61FF /* upArrow@2x.png */; };
 		8BC66CA91C4776FC002D61FF /* RadarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BC66CA81C4776FC002D61FF /* RadarViewController.m */; };
 		8BC66CAD1C478587002D61FF /* BlockOperationWithIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BC66CAC1C478587002D61FF /* BlockOperationWithIdentifier.m */; };
@@ -261,6 +266,11 @@
 		8B3AA41F1C43F56D00C025F9 /* male-iconSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "male-iconSelected@2x.png"; sourceTree = "<group>"; };
 		8B3AA4221C43FE7A00C025F9 /* FriendModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendModel.h; sourceTree = "<group>"; };
 		8B3AA4231C43FE7A00C025F9 /* FriendModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendModel.m; sourceTree = "<group>"; };
+		8B4C0D351C4BB52F00FCE12C /* PinSquare@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinSquare@2x.png"; sourceTree = "<group>"; };
+		8B4C0D361C4BB52F00FCE12C /* PinSquareBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinSquareBlue@2x.png"; sourceTree = "<group>"; };
+		8B4C0D371C4BB52F00FCE12C /* PinSquareGray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinSquareGray@2x.png"; sourceTree = "<group>"; };
+		8B4C0D381C4BB52F00FCE12C /* RoundPinBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RoundPinBlue@2x.png"; sourceTree = "<group>"; };
+		8B4C0D391C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SquarePinOrangeRound@2x.png"; sourceTree = "<group>"; };
 		8BC66CA31C4751D3002D61FF /* upArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "upArrow@2x.png"; sourceTree = "<group>"; };
 		8BC66CA71C4776FC002D61FF /* RadarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarViewController.h; sourceTree = "<group>"; };
 		8BC66CA81C4776FC002D61FF /* RadarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarViewController.m; sourceTree = "<group>"; };
@@ -417,6 +427,7 @@
 		666C35AA1C147CAE00B9C1A9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8B4C0D341C4BB52F00FCE12C /* Radar */,
 				8BC66CAE1C479394002D61FF /* backCpy@2x.png */,
 				8BC66CA31C4751D3002D61FF /* upArrow@2x.png */,
 				8B00A4441C4565B400DD381C /* cake-icon@2x.png */,
@@ -817,6 +828,18 @@
 			path = FriendListVC;
 			sourceTree = "<group>";
 		};
+		8B4C0D341C4BB52F00FCE12C /* Radar */ = {
+			isa = PBXGroup;
+			children = (
+				8B4C0D351C4BB52F00FCE12C /* PinSquare@2x.png */,
+				8B4C0D361C4BB52F00FCE12C /* PinSquareBlue@2x.png */,
+				8B4C0D371C4BB52F00FCE12C /* PinSquareGray@2x.png */,
+				8B4C0D381C4BB52F00FCE12C /* RoundPinBlue@2x.png */,
+				8B4C0D391C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png */,
+			);
+			path = Radar;
+			sourceTree = "<group>";
+		};
 		8B59628A1C40210700FFD048 /* PPImageScrollingTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -1185,8 +1208,10 @@
 				66AE3C5C1C13025A00A0238F /* fold.caf in Resources */,
 				8BDD12FD1C421DAB0073403E /* tab3@2x.png in Resources */,
 				8BEF0DAE1C38D65E00A78BB3 /* menu-button@2x.png in Resources */,
+				8B4C0D3E1C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png in Resources */,
 				8BC66CA41C4751D3002D61FF /* upArrow@2x.png in Resources */,
 				8BC66CB51C47971E002D61FF /* blueArrow.png in Resources */,
+				8B4C0D3C1C4BB52F00FCE12C /* PinSquareGray@2x.png in Resources */,
 				66AE3C5B1C13025A00A0238F /* bloom.caf in Resources */,
 				8BDD14721C434BD50073403E /* iron.jpg in Resources */,
 				666C36241C1D233300B9C1A9 /* female-icon@2x.png in Resources */,
@@ -1200,7 +1225,9 @@
 				8B28FFB91C3D71F700CA785F /* tick-green@2x.png in Resources */,
 				8BCD02201C2B17CA00C81E3C /* icon29.png in Resources */,
 				666C35AC1C147CAE00B9C1A9 /* homescreen_logo@2x.png in Resources */,
+				8B4C0D3A1C4BB52F00FCE12C /* PinSquare@2x.png in Resources */,
 				666C36211C1D22CB00B9C1A9 /* profile-placeholder@2x.png in Resources */,
+				8B4C0D3D1C4BB52F00FCE12C /* RoundPinBlue@2x.png in Resources */,
 				8B28FFC51C3D778900CA785F /* sports-icon@2x.png in Resources */,
 				8B28FFCF1C3D852800CA785F /* friendship-already-icon@2x.png in Resources */,
 				8B28FFC41C3D778900CA785F /* settings-icon@2x.png in Resources */,
@@ -1231,6 +1258,7 @@
 				666C35B11C14991700B9C1A9 /* password@2x.png in Resources */,
 				666C361F1C1C9CF700B9C1A9 /* Assets.xcassets in Resources */,
 				666C361D1C1C9C7600B9C1A9 /* LaunchImage.jpg in Resources */,
+				8B4C0D3B1C4BB52F00FCE12C /* PinSquareBlue@2x.png in Resources */,
 				8B28FFBD1C3D741000CA785F /* chat-icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1405,7 +1433,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = UrbanEx;
-				PROVISIONING_PROFILE = "d46f61e2-23c8-4a58-af01-7cee4048d383";
+				PROVISIONING_PROFILE = "6513fa62-0147-46bf-9948-e9a8b6e9508e";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1444,7 +1472,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = UrbanEx;
-				PROVISIONING_PROFILE = "d46f61e2-23c8-4a58-af01-7cee4048d383";
+				PROVISIONING_PROFILE = "6513fa62-0147-46bf-9948-e9a8b6e9508e";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1462,7 +1490,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.brandscape.urbanexplorer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d46f61e2-23c8-4a58-af01-7cee4048d383";
+				PROVISIONING_PROFILE = "6513fa62-0147-46bf-9948-e9a8b6e9508e";
 			};
 			name = Debug;
 		};
@@ -1478,7 +1506,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.brandscape.urbanexplorer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d46f61e2-23c8-4a58-af01-7cee4048d383";
+				PROVISIONING_PROFILE = "6513fa62-0147-46bf-9948-e9a8b6e9508e";
 			};
 			name = Release;
 		};
@@ -1490,7 +1518,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.UqrwbearnteyxuTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d46f61e2-23c8-4a58-af01-7cee4048d383";
+				PROVISIONING_PROFILE = "6513fa62-0147-46bf-9948-e9a8b6e9508e";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Uqrwbearnteyxu.app/Uqrwbearnteyxu";
 			};
 			name = Debug;
@@ -1503,7 +1531,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.demo.UqrwbearnteyxuTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d46f61e2-23c8-4a58-af01-7cee4048d383";
+				PROVISIONING_PROFILE = "6513fa62-0147-46bf-9948-e9a8b6e9508e";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Uqrwbearnteyxu.app/Uqrwbearnteyxu";
 			};
 			name = Release;

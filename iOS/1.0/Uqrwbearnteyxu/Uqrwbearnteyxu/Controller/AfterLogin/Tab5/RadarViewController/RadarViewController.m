@@ -12,7 +12,7 @@
 #import "CommansUtility.h"
 
 #define smallPadding 2
-#define largePadding 25
+#define largePadding 10
 
 @interface RadarViewController()
 
@@ -20,13 +20,15 @@
 @end
 
 @implementation RadarViewController{
-    NSMutableArray *arrayOfViews;
+    NSMutableArray *arrayOfLineViews,*arrayOfViews;
     NSCache *imageCache;
     UserModel *userModel;
     
     UIImageView *profileImageView;
     UIImage *imgProfile;
-    
+    int _xPosForRadar;
+    int _yPosForRadar;
+
 }
 
 - (void)viewDidLoad {
@@ -46,27 +48,98 @@
     });
     
     
-    [self addRadar];
  
-    [self.sliderView addTarget:self action:@selector(sliderViewValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [self addOuterLayers];
+    [self addRadar];
+
+    
+    [self.sliderView addTarget:self action:@selector(sliderViewValueChanged:) forControlEvents:(UIControlEventTouchUpInside | UIControlEventTouchUpOutside)];
     
 }
 
 
--(void)addRadar{
-    int xPos = 0;
-    int yPos = 80;
-    int width = self.view.frame.size.width;
-    int height = self.view.frame.size.width;
+-(void)addOuterLayers{
+    int xPos = -64;
+    int yPos = 0;
+    int width = self.view.frame.size.width+128;
+    int height = self.view.frame.size.width+128;
     
-    int numberOfViews = (width / 27)/2;
+    int numberOfViews = (width / largePadding)/2;
+    
+    UIView *mainContainer = [[UIView alloc]initWithFrame:CGRectMake(xPos, yPos, width, height)];
+    mainContainer.backgroundColor = [UIColor yellowColor];
+    [self.view addSubview:mainContainer];
+
+    int xPosForInner = 0;
+    int yPosForInner = 0;
+    int widthForInner = self.view.frame.size.width+140;
+    int heightForInner = self.view.frame.size.width+140;
+
+    
+    for (int k=0; k<(numberOfViews-2); k++) {
+        UIView *mainView = [[UIView alloc]initWithFrame:CGRectMake(xPosForInner, yPosForInner, width, height)];
+        mainView.backgroundColor = [UIColor grayColor];
+        [VIewUtility addHexagoneShapeMaskFor:mainView];
+        [mainContainer addSubview:mainView];
+        
+        
+        if(k == (numberOfViews)){
+            UIImageView *lineView = [[UIImageView alloc]initWithFrame:CGRectMake(xPosForInner+smallPadding, yPosForInner+smallPadding, width-(2*smallPadding), height-(2*smallPadding))];
+            lineView.backgroundColor = [UIColor colorWithRed:49.0/255.0 green:82.0/255.0 blue:89.0/255.0 alpha:1];
+            [VIewUtility addHexagoneShapeMaskFor:lineView];
+            
+            lineView.image =imgProfile;
+            lineView.backgroundColor = [UIColor colorWithRed:49.0/255.0 green:82.0/255.0 blue:89.0/255.0 alpha:1];
+            profileImageView = lineView;
+            [mainContainer addSubview:lineView];
+            
+        }
+        else{
+            UIView *lineView = [[UIView alloc]initWithFrame:CGRectMake(xPosForInner+smallPadding, yPosForInner+smallPadding, width-(2*smallPadding), height-(2*smallPadding))];
+            lineView.backgroundColor = [UIColor colorWithRed:49.0/255.0 green:82.0/255.0 blue:89.0/255.0 alpha:1];
+            [VIewUtility addHexagoneShapeMaskFor:lineView];
+            
+            [mainContainer addSubview:lineView];
+            
+        }
+        
+        
+        
+        xPosForInner = xPosForInner + largePadding;
+        yPosForInner = yPosForInner + largePadding;
+        width = width - (2*largePadding);
+        height = height - (2*largePadding);
+        
+        xPos = xPos + largePadding;
+        yPos = yPos + largePadding;
+
+        NSLog(@"XPOS %d",xPos);
+        
+        if(xPos>0){
+            _xPosForRadar = xPos;
+            _yPosForRadar = yPos;
+            break;
+        }
+    }
+
+}
+
+
+-(void)addRadar{
+    int xPos = _xPosForRadar;
+    int yPos = _yPosForRadar;
+    int width = self.view.frame.size.width- (_xPosForRadar *2);
+    int height = self.view.frame.size.width - (_xPosForRadar *2);
+    
+    int numberOfViews = (width / largePadding)/2;
     
     arrayOfViews = [[NSMutableArray alloc]init];
+    arrayOfLineViews = [[NSMutableArray alloc]init];
     
-    self.sliderView.maximumValue = numberOfViews+1;
+    self.sliderView.maximumValue = numberOfViews-2;
     self.sliderView.minimumValue = 0;
     
-    for (int k=0; k<(numberOfViews+1); k++) {
+    for (int k=0; k<(numberOfViews-2); k++) {
         UIView *mainView = [[UIView alloc]initWithFrame:CGRectMake(xPos, yPos, width, height)];
         mainView.backgroundColor = [UIColor grayColor];
         [VIewUtility addHexagoneShapeMaskFor:mainView];
@@ -82,6 +155,7 @@
             lineView.backgroundColor = [UIColor colorWithRed:49.0/255.0 green:82.0/255.0 blue:89.0/255.0 alpha:1];
             profileImageView = lineView;
             [self.view addSubview:lineView];
+            [arrayOfViews addObject:lineView];
 
         }
         else{
@@ -90,6 +164,8 @@
             [VIewUtility addHexagoneShapeMaskFor:lineView];
             
             [self.view addSubview:lineView];
+            [arrayOfViews addObject:lineView];
+            
     
         }
 
@@ -100,19 +176,31 @@
         width = width - (2*largePadding);
         height = height - (2*largePadding);
         
-        [arrayOfViews addObject:mainView];
+        [arrayOfLineViews addObject:mainView];
+
     }
 }
 
+#pragma mark - Slider values event
+#pragma mark 
 
 -(void)sliderViewValueChanged:(id)sender{
     int value = ceil(self.sliderView.value);
-    value =(int) arrayOfViews.count - value;
+    value =(int) arrayOfLineViews.count - value;
     
-    for (int k=0; k<arrayOfViews.count; k++) {
-        UIView *view = [arrayOfViews objectAtIndex:k];
+    for (int k=0; k<arrayOfLineViews.count; k++) {
+        UIView *view = [arrayOfLineViews objectAtIndex:k];
         if(k==value){
             view.backgroundColor = [UIColor colorWithRed:148/255 green:249.0/255 blue:253.255 alpha:1];
+            
+            UIView *mainView = [arrayOfViews objectAtIndex:k];
+            mainView.backgroundColor =[UIColor redColor];
+            
+            UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(mainView.frame.size.width/2, 0, 20, 20)];
+            btn.backgroundColor = [UIColor yellowColor];
+            
+            [mainView addSubview:btn];
+            
         }
         else{
             view.backgroundColor = [UIColor grayColor];

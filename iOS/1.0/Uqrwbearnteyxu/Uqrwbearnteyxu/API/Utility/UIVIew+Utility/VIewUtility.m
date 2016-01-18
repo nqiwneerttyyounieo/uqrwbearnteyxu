@@ -37,6 +37,7 @@
     [hexagonPath addLineToPoint:CGPointMake(0, midy)];
     [hexagonPath addLineToPoint:CGPointMake(lcolumn, y)];
     
+
     
     hexagonMask.path = hexagonPath.CGPath;
     viewObj.layer.mask = hexagonMask;

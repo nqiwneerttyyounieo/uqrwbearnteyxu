@@ -71,21 +71,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="m2Q-el-DbZ">
-                                <rect key="frame" x="41" y="433" width="238" height="31"/>
+                            <slider opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="m2Q-el-DbZ">
+                                <rect key="frame" x="41" y="460" width="238" height="31"/>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="234" id="Vak-4J-Xo4"/>
-                                    <constraint firstAttribute="height" constant="30" id="emK-dk-83j"/>
+                                    <constraint firstAttribute="height" constant="30" id="7V1-J3-V8C"/>
                                 </constraints>
                             </slider>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" red="0.19215686269999999" green="0.32156862749999998" blue="0.34901960780000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="m2Q-el-DbZ" firstAttribute="leading" secondItem="fk4-LM-eO9" secondAttribute="leading" constant="43" id="AIA-Jh-zwr"/>
-                            <constraint firstAttribute="trailing" secondItem="m2Q-el-DbZ" secondAttribute="trailing" constant="43" id="BKs-Ks-kGj"/>
-                            <constraint firstItem="bpJ-yW-YJW" firstAttribute="top" secondItem="m2Q-el-DbZ" secondAttribute="bottom" constant="56" id="Bt5-gz-e7G"/>
+                            <constraint firstItem="m2Q-el-DbZ" firstAttribute="leading" secondItem="fk4-LM-eO9" secondAttribute="leadingMargin" constant="23" id="BhG-nY-FWG"/>
+                            <constraint firstItem="bpJ-yW-YJW" firstAttribute="top" secondItem="m2Q-el-DbZ" secondAttribute="bottom" constant="29" id="iC7-AJ-ztW"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="m2Q-el-DbZ" secondAttribute="trailing" constant="23" id="mpA-y0-azx"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="KkN-k4-aGz"/>
