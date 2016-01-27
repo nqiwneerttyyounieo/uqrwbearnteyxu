@@ -264,6 +264,8 @@
 			break;
 			
 		case 1:
+            [self.delegate rightMenuVC:self didSelectMenu:menuSearchFriend];
+
 			break;
 			
 		case 2:

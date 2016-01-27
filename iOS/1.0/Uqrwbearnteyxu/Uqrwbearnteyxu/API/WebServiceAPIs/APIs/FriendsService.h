@@ -21,6 +21,9 @@
 + (FriendsService *)sharedInstance;
 
 -(void)getFriendListOnUserId:(NSString *)userID andPageNo:(int)pageNo;
+-(void)getAllUserList:(NSString *)userID andPageNo:(int)pageNo forSearchedText:(NSString *)text;
 
+
+-(void)sendFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID;
 
 @end

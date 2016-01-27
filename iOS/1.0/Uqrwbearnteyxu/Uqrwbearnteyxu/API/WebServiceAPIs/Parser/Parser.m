@@ -189,8 +189,78 @@
     return arrayToReturn;
 }
 
+-(NSMutableArray *)parseRadarListData:(NSData *)responseData andError:(NSError **)error{
+    NSMutableArray *arrayToReturn;
+    NSError *errors;
+    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData //1
+                                                         options:NSJSONReadingAllowFragments error:&errors];
+    if(!errors){
+        NSLog(@"Json : %@",json);
+        if([[json valueForKey:@"Status"]integerValue]==0){
+            arrayToReturn=[[NSMutableArray alloc]init];
+            NSDictionary *dict=[json valueForKey:@"Data"];
+            
+            NSMutableArray *arrayOfFriends = [dict valueForKey:@"NearbyfriendsList"];
+            
+            for (int k=0; k<arrayOfFriends.count; k++) {
+                NSDictionary *friendProperties = [arrayOfFriends objectAtIndex:k];
+                
+                FriendModel *model = [[FriendModel alloc]init];
+                model.strBithdate = [friendProperties valueForKey:@"BirthDate"];
+                model.strEmail = [friendProperties valueForKey:@"Email"];
+                model.strFirstName = [friendProperties valueForKey:@"FirstName"];
+                model.strFriendsCount = [friendProperties valueForKey:@"FriendsCount"];
+                model.strGender = [friendProperties valueForKey:@"Gender"];
+                model.strUserID = [friendProperties valueForKey:@"Id"];
+                model.strLastName = [friendProperties valueForKey:@"LastName"];
+                model.strMutualFriends = [friendProperties valueForKey:@"MeetUpCount"];
+                model.strMutualFriends = [friendProperties valueForKey:@"MutualFriends"];
+                model.strMutualSports = [friendProperties valueForKey:@"MutualSports"];
+                model.strPhoneNumber = [friendProperties valueForKey:@"PhoneNumber"];
+                model.strProfilePicURL = [NSString stringWithFormat:@"%@/%@",baseURL,[dict valueForKey:@"ProfilePicURL"]];
+                if([model.strProfilePicURL isEqualToString:baseURL]){
+                    model.strProfilePicURL = @"";
+                }
+                
+                model.strResidence = [friendProperties valueForKey:@"Residence"];
+                
+                model.strThumbImgPath = [NSString stringWithFormat:@"%@/%@",baseURL,[friendProperties valueForKey:@"ThumbImgPath"]];
+                
+                if([model.strThumbImgPath isEqualToString:baseURL]){
+                    model.strThumbImgPath = @"";
+                }
+                
+                
+                model.strUserName = [friendProperties valueForKey:@"UserName"];
+                model.strClientUserName = [friendProperties valueForKey:@"ClientUserName"];
+                
+                [arrayToReturn addObject:model];
+                
 
-#pragma mark - Friends service 
+            }
+            
+            
+            
+            return arrayToReturn;
+        }
+        else{
+            
+            NSMutableDictionary* details = [NSMutableDictionary dictionary];
+            [details setValue:[json valueForKey:@"ErrorMessage"] forKey:NSLocalizedDescriptionKey];
+            *error = [NSError errorWithDomain:ErrorDomain code:122 userInfo:details];
+            return nil;
+            
+        }
+    }
+    else{
+        NSMutableDictionary* details = [NSMutableDictionary dictionary];
+        [details setValue:@"dasd" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"asdas" code:122 userInfo:details];
+        return nil;
+    }
+    return arrayToReturn;
+}
+#pragma mark - Friends service
 
 -(NSMutableArray *)parseFriendListData:(NSData *)responseData andError:(NSError **)error{
     NSMutableArray *arrayToReturn;
@@ -302,5 +372,121 @@ model.strClientUserName = [dict valueForKey:@"ClientUserName"];
     }
     return arrayToReturn;
 }
+
+-(NSMutableArray *)parseSearchFriendListData:(NSData *)responseData andError:(NSError **)error{
+    NSMutableArray *arrayToReturn;
+    
+    NSError *errors;
+    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData //1
+                                                         options:NSJSONReadingAllowFragments error:&errors];
+    if(!errors){
+        NSLog(@"Json : %@",json);
+        if([[json valueForKey:@"Status"]integerValue]==1){
+            arrayToReturn=[[NSMutableArray alloc]init];
+            NSDictionary *dict=[json valueForKey:@"Data"];
+            
+            NSMutableArray *friendArray = [dict valueForKey:@"PeopleYouMayKnow"];
+            
+            for (int k=0; k<friendArray.count; k++) {
+                NSDictionary *dict = [friendArray objectAtIndex:k];
+                
+                FriendModel *model = [[FriendModel alloc]init];
+                model.strBithdate = [dict valueForKey:@"BirthDate"];
+                model.strEmail = [dict valueForKey:@"Email"];
+                model.strFirstName = [dict valueForKey:@"FirstName"];
+                model.strFriendsCount = [dict valueForKey:@"FriendsCount"];
+                model.strGender = [dict valueForKey:@"Gender"];
+                model.strUserID = [dict valueForKey:@"Id"];
+                model.strLastName = [dict valueForKey:@"LastName"];
+                model.strMutualFriends = [dict valueForKey:@"MeetUpCount"];
+                model.strMutualFriends = [dict valueForKey:@"MutualFriends"];
+                model.strMutualSports = [dict valueForKey:@"MutualSports"];
+                model.strPhoneNumber = [dict valueForKey:@"PhoneNumber"];
+                model.strProfilePicURL = [NSString stringWithFormat:@"%@/%@",baseURL,[dict valueForKey:@"ProfilePicURL"]];
+                if([model.strProfilePicURL isEqualToString:baseURL]){
+                    model.strProfilePicURL = @"";
+                }
+                
+                model.strResidence = [dict valueForKey:@"Residence"];
+                
+                model.strThumbImgPath = [NSString stringWithFormat:@"%@/%@",baseURL,[dict valueForKey:@"ThumbImgPath"]];
+                
+                if([model.strThumbImgPath isEqualToString:baseURL]){
+                    model.strThumbImgPath = @"";
+                }
+                
+                
+                model.strUserName = [dict valueForKey:@"UserName"];
+                model.strClientUserName = [dict valueForKey:@"ClientUserName"];
+                model.arrayOfSports = [dict valueForKey:@"UserSports"];
+                model.isRequestFriend = YES;
+                model.strRelationshipStatus = [[dict valueForKey:@"RelationshipStatus"] stringValue];
+                
+                [arrayToReturn addObject:model];
+                
+                
+                
+            }
+            
+            
+            return arrayToReturn;
+        }
+        else{
+            //NSDictionary *errorDict=[json valueForKey:@"ErrorMessage"];
+            
+            NSMutableDictionary* details = [NSMutableDictionary dictionary];
+            [details setValue:[json valueForKey:@"ErrorMessage"] forKey:NSLocalizedDescriptionKey];
+            *error = [NSError errorWithDomain:ErrorDomain code:122 userInfo:details];
+            return nil;
+            
+        }
+        
+    }
+    else{
+        NSMutableDictionary* details = [NSMutableDictionary dictionary];
+        [details setValue:jsonError forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:ErrorDomain code:111 userInfo:details];
+        return nil;
+    }
+    return arrayToReturn;
+}
+
+
+
+-(NSMutableArray *)parseSendFriendRequestData:(NSData *)responseData andError:(NSError **)error{
+    NSMutableArray *arrayToReturn;
+    
+    NSError *errors;
+    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:responseData //1
+                                                         options:NSJSONReadingAllowFragments error:&errors];
+    if(!errors){
+        NSLog(@"Json : %@",json);
+        if([[json valueForKey:@"Status"]integerValue]==1){
+            arrayToReturn=[[NSMutableArray alloc]init];
+            NSDictionary *dict=[json valueForKey:@"data"];
+            
+            return arrayToReturn;
+        }
+        else{
+            //NSDictionary *errorDict=[json valueForKey:@"ErrorMessage"];
+            
+            NSMutableDictionary* details = [NSMutableDictionary dictionary];
+            [details setValue:[json valueForKey:@"ErrorMessage"] forKey:NSLocalizedDescriptionKey];
+            *error = [NSError errorWithDomain:ErrorDomain code:122 userInfo:details];
+            return nil;
+            
+        }
+        
+    }
+    else{
+        NSMutableDictionary* details = [NSMutableDictionary dictionary];
+        [details setValue:jsonError forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:ErrorDomain code:111 userInfo:details];
+        return nil;
+    }
+    return arrayToReturn;
+    
+}
+
 
 @end

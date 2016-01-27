@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FriendModel.h"
 
 @interface ProfileViewController : UIViewController
+
+@property(nonatomic,strong)FriendModel *friendModel;
 
 @end

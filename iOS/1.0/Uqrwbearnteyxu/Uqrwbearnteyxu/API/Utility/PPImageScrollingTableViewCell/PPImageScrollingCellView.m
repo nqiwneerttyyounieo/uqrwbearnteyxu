@@ -24,6 +24,27 @@
 
 @implementation PPImageScrollingCellView
 
+
+-(void)awakeFromNib{
+    [super awakeFromNib];
+
+    
+    /* Set flowLayout for CollectionView*/
+    UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    flowLayout.itemSize = CGSizeMake(50, 50.0);
+    flowLayout.sectionInset = UIEdgeInsetsMake(5, 10, 5, 10);
+    flowLayout.minimumLineSpacing = 10;
+    
+    /* Init and Set CollectionView */
+    self.myCollectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:flowLayout];
+    self.myCollectionView.delegate = self;
+    self.myCollectionView.dataSource = self;
+    self.myCollectionView.showsHorizontalScrollIndicator = NO;
+    
+    [self.myCollectionView registerClass:[PPCollectionViewCell class] forCellWithReuseIdentifier:@"PPCollectionCell"];
+    [self addSubview:_myCollectionView];
+}
 - (id)initWithFrame:(CGRect)frame
 {
      self = [super initWithFrame:frame];

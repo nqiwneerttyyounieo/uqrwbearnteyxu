@@ -13,8 +13,10 @@
 #import "UserModel.h"
 #import "CommansUtility.h"
 #import "BlockOperationWithIdentifier.h"
+#import "FriendsService.h"
+#import "MBProgressHUD.h"
 
-@interface ProfileViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface ProfileViewController ()<UITableViewDataSource,UITableViewDelegate,WebServiceDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableview;
 @property (nonatomic, strong) NSCache *eventImageCache;
 @property (nonatomic, strong) NSOperationQueue *eventImageOperationQueue;
@@ -24,7 +26,8 @@
 
 @implementation ProfileViewController{
     UserModel *loggedInUser;
-
+    FriendsService *friendService;
+    
 }
 
 - (void)viewDidLoad {
@@ -72,6 +75,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+#pragma mark - Web service
+
+-(void)webAPIAddFriend:(FriendModel *)fModel{
+    friendService = [[FriendsService alloc]init];
+    friendService.tag = 0;
+    friendService.delegate=self;
+    [friendService sendFriendRequestFromUserId:loggedInUser.strUserId andTo:fModel.strUserID];
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+}
+
 /*
 #pragma mark - Navigation
 
@@ -95,6 +110,80 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.section == 0){
+        if(self.friendModel){
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"friendsProfileCell"];
+            
+            UIImageView *imgviewProfile = (UIImageView *)[cell viewWithTag:100];
+            UILabel *lblProfileName = (UILabel *)[cell viewWithTag:101];
+            UILabel *lblProfileStatus = (UILabel *)[cell viewWithTag:102];
+            UIButton *btnFriendshipStatus = (UIButton *)[cell viewWithTag:103];
+            UIButton *btnChat = (UIButton *)[cell viewWithTag:104];
+            UIButton *btnMeetup = (UIButton *)[cell viewWithTag:105];
+            
+            
+
+            //friendship status
+            [btnFriendshipStatus addTarget:self action:@selector(btnFriendshipStatusClicked:) forControlEvents:UIControlEventTouchDown];
+            if([self.friendModel.strRelationshipStatus isEqualToString:@"0"]){
+                [btnFriendshipStatus setImage:[UIImage imageNamed:@"AddFriend.png"] forState:UIControlStateNormal];
+            }
+            else if ([self.friendModel.strRelationshipStatus isEqualToString:@"1"]){
+                [btnFriendshipStatus setImage:[UIImage imageNamed:@"friendship-already-icon.png"] forState:UIControlStateNormal];
+                
+            }
+            
+            
+            
+            [VIewUtility addHexagoneShapeMaskFor:imgviewProfile];
+            lblProfileName.text = self.friendModel.strClientUserName;
+            lblProfileStatus.text = self.friendModel.strEmail;
+            
+            
+            
+            if(self.friendModel.strThumbImgPath.length==0){
+                
+            }
+            UIImage *imageFromCache = [self.eventImageCache objectForKey:[NSString stringWithFormat:@"%@",self.friendModel.strThumbImgPath]];
+            if (imageFromCache) {
+                imgviewProfile.image=imageFromCache;
+            }else{
+                
+                imgviewProfile.image = nil;//user a placeholder later
+                BlockOperationWithIdentifier *operation = [BlockOperationWithIdentifier blockOperationWithBlock:^{
+                    
+                    NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.friendModel.strThumbImgPath]];
+                    
+                    UIImage *img = [UIImage imageWithData:imageData];
+                    if (img) {
+                        [self.eventImageCache setObject:img forKey:[NSString stringWithFormat:@"%@",self.friendModel.strThumbImgPath]];
+                    }
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        imgviewProfile.layer.cornerRadius=3;
+                        imgviewProfile.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                        imgviewProfile.layer.borderWidth=0.75;
+                        imgviewProfile.image = img;
+                        
+                        CATransition *transition = [CATransition animation];
+                        transition.duration = 0.75f;
+                        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                        transition.type = kCATransitionFade;
+                        
+                        [imgviewProfile.layer addAnimation:transition forKey:nil];
+                        imgviewProfile.contentMode=UIViewContentModeScaleAspectFit;
+                        imgviewProfile.clipsToBounds = YES;
+                    }];
+                }];
+                operation.queuePriority = NSOperationQueuePriorityNormal;
+                operation.identifier=self.friendModel.strThumbImgPath;
+                [self.eventImageOperationQueue addOperation:operation];
+            }
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            return cell;
+
+        }
+        else{
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"OwnProfileCell"];
         
         UIImageView *imgviewProfile = (UIImageView *)[cell viewWithTag:200];
@@ -107,7 +196,7 @@
         [VIewUtility addHexagoneShapeMaskFor:imgviewProfile];
         lblProfileName.text = loggedInUser.strClientUserName;
         lblProfileStatus.text = loggedInUser.strEmailID;
-        [btnFriendshipStatus addTarget:self action:@selector(btnFriendshipStatusClicked:) forControlEvents:UIControlEventTouchDown];
+        //[btnFriendshipStatus addTarget:self action:@selector(btnFriendshipStatusClicked:) forControlEvents:UIControlEventTouchDown];
         
         
         
@@ -150,13 +239,14 @@
         }
         
         
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
+        }
         
     }
     else if(indexPath.section ==1){
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellSelection"];
-        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
     else if(indexPath.section ==2){
@@ -164,6 +254,7 @@
         UILabel *lblProfileName = (UILabel *)[cell viewWithTag:400];
         lblProfileName.text = @"Apple leads the world in innovation with iPhone, iPad, Mac, Apple Watch, iOS, OS X, watchOS and more. Visit the site to learn, buy and get support.";
         lblProfileName.preferredMaxLayoutWidth = 250;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
         
     }
@@ -192,7 +283,7 @@
        // [customCell setImageTitleTextColor:[UIColor whiteColor] withBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]];
        // [customCell setImageTitleLabelWitdh:90 withHeight:45];
         [customCell setCollectionViewBackgroundColor:[UIColor clearColor]];
-        
+        customCell.selectionStyle = UITableViewCellSelectionStyleNone;
         return customCell;
     }
     else if(indexPath.section ==4){
@@ -220,7 +311,8 @@
         // [customCell setImageTitleTextColor:[UIColor whiteColor] withBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]];
         // [customCell setImageTitleLabelWitdh:90 withHeight:45];
         [customCell setCollectionViewBackgroundColor:[UIColor clearColor]];
-        
+        customCell.selectionStyle = UITableViewCellSelectionStyleNone;
+
         return customCell;
     }
     else if(indexPath.section ==5){
@@ -248,7 +340,8 @@
         // [customCell setImageTitleTextColor:[UIColor whiteColor] withBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]];
         // [customCell setImageTitleLabelWitdh:90 withHeight:45];
         [customCell setCollectionViewBackgroundColor:[UIColor clearColor]];
-        
+        customCell.selectionStyle = UITableViewCellSelectionStyleNone;
+
         return customCell;
     }
     else if(indexPath.section ==6){
@@ -281,11 +374,13 @@
         // [customCell setImageTitleTextColor:[UIColor whiteColor] withBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.7]];
         // [customCell setImageTitleLabelWitdh:90 withHeight:45];
         [customCell setCollectionViewBackgroundColor:[UIColor clearColor]];
-        
+        customCell.selectionStyle = UITableViewCellSelectionStyleNone;
+
         return customCell;
     }
     else{
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellFriendStatus"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
         return cell;
     }
@@ -429,7 +524,12 @@
 
 -(void)btnFriendshipStatusClicked:(id)sender{
     NSLog(@"Friednship clicked");
-    
+    if([self.friendModel.strRelationshipStatus isEqualToString:@"0"]){
+        [self webAPIAddFriend:self.friendModel];
+    }
+    else if ([self.friendModel.strRelationshipStatus isEqualToString:@"1"]){
+        
+    }
 }
 
 - (IBAction)btnMenuClicked:(id)sender {
@@ -443,6 +543,25 @@
 
 - (void)scrollingTableViewCell:(PPImageScrollingTableViewCell *)scrollingTableViewCell didSelectImageAtIndexPath:(NSIndexPath*)indexPathOfImage atCategoryRowIndex:(NSInteger)categoryRowIndex{
     
+}
+
+#pragma mark - Web service response
+#pragma mark
+
+- (void)request:(id)serviceRequest didFailWithError:(NSError *)error{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    
+}
+
+- (void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    
+    FriendsService *service=(FriendsService *)serviceRequest;
+    if(service.tag==0){
+        self.friendModel.strRelationshipStatus = @"1";
+        [self.tableview reloadData];
+        
+    }
 }
 
 @end

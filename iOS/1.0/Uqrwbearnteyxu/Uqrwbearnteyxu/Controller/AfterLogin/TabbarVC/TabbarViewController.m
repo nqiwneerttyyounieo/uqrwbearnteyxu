@@ -12,7 +12,7 @@
 #import "ProfileViewController.h"
 #import "CommansUtility.h"
 #import "AskForLoginViewController.h"
-
+#import "SearchFriendViewController.h"
 
 @interface TabbarViewController ()<DCPathButtonDelegate,UITabBarControllerDelegate,RightMenuViewControllerDelegate>
 
@@ -120,9 +120,20 @@
         
         UIViewController *vc ;
         vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+        [nav pushViewController:vc animated:YES];
+    }
+    else if (selectedMenu == menuSearchFriend){
+        UINavigationController *nav = self.selectedViewController;
         
+        UIViewController *controller = [nav topViewController];
+        if([controller isKindOfClass:[SearchFriendViewController class]]){
+            return;
+        }
         
-        
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainAppStoryboard"
+                                                                 bundle: nil];
+        UIViewController *vc ;
+        vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"SearchFriendViewController"];
         [nav pushViewController:vc animated:YES];
     }
 }

@@ -76,11 +76,22 @@
 		8B3AA4201C43F56D00C025F9 /* female-iconSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B3AA41E1C43F56D00C025F9 /* female-iconSelected@2x.png */; };
 		8B3AA4211C43F56D00C025F9 /* male-iconSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B3AA41F1C43F56D00C025F9 /* male-iconSelected@2x.png */; };
 		8B3AA4241C43FE7A00C025F9 /* FriendModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B3AA4231C43FE7A00C025F9 /* FriendModel.m */; };
-		8B4C0D3A1C4BB52F00FCE12C /* PinSquare@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D351C4BB52F00FCE12C /* PinSquare@2x.png */; };
-		8B4C0D3B1C4BB52F00FCE12C /* PinSquareBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D361C4BB52F00FCE12C /* PinSquareBlue@2x.png */; };
-		8B4C0D3C1C4BB52F00FCE12C /* PinSquareGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D371C4BB52F00FCE12C /* PinSquareGray@2x.png */; };
-		8B4C0D3D1C4BB52F00FCE12C /* RoundPinBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D381C4BB52F00FCE12C /* RoundPinBlue@2x.png */; };
-		8B4C0D3E1C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B4C0D391C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png */; };
+		8B61B0501C53A60E006EAB07 /* RadarServices.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B04F1C53A60D006EAB07 /* RadarServices.m */; };
+		8B61B0731C549A8D006EAB07 /* RadarAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B0701C549A8D006EAB07 /* RadarAnnotation.m */; };
+		8B61B0741C549A8D006EAB07 /* RadarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B0721C549A8D006EAB07 /* RadarView.m */; };
+		8B61B0781C549B63006EAB07 /* UIView+AddHexagone.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B0771C549B63006EAB07 /* UIView+AddHexagone.m */; };
+		8B61B07D1C549C87006EAB07 /* RadarDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B07A1C549C87006EAB07 /* RadarDetailViewController.m */; };
+		8B61B07E1C549C87006EAB07 /* RadarFriendDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B07C1C549C87006EAB07 /* RadarFriendDetailViewController.m */; };
+		8B61B0811C54A289006EAB07 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B0801C54A289006EAB07 /* PageViewController.m */; };
+		8B61B0861C54C8A2006EAB07 /* meetupPn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B61B0821C54C8A2006EAB07 /* meetupPn@2x.png */; };
+		8B61B0871C54C8A2006EAB07 /* meetupSelectedPin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B61B0831C54C8A2006EAB07 /* meetupSelectedPin@2x.png */; };
+		8B61B0881C54C8A2006EAB07 /* userPin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B61B0841C54C8A2006EAB07 /* userPin@2x.png */; };
+		8B61B0891C54C8A2006EAB07 /* UserPinSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B61B0851C54C8A2006EAB07 /* UserPinSelected@2x.png */; };
+		8B61B08B1C54EAA9006EAB07 /* slidercircle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B61B08A1C54EAA9006EAB07 /* slidercircle@2x.png */; };
+		8B61B08F1C571D2F006EAB07 /* SearchFriendViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B08E1C571D2F006EAB07 /* SearchFriendViewController.m */; };
+		8B61B0951C573054006EAB07 /* CustomSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B0921C573054006EAB07 /* CustomSlider.m */; };
+		8B61B0961C573054006EAB07 /* GBSliderBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B61B0941C573054006EAB07 /* GBSliderBubbleView.m */; };
+		8B61B0991C575881006EAB07 /* AddFriend@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8B61B0981C575881006EAB07 /* AddFriend@2x.png */; };
 		8BC66CA41C4751D3002D61FF /* upArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8BC66CA31C4751D3002D61FF /* upArrow@2x.png */; };
 		8BC66CA91C4776FC002D61FF /* RadarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BC66CA81C4776FC002D61FF /* RadarViewController.m */; };
 		8BC66CAD1C478587002D61FF /* BlockOperationWithIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BC66CAC1C478587002D61FF /* BlockOperationWithIdentifier.m */; };
@@ -266,11 +277,32 @@
 		8B3AA41F1C43F56D00C025F9 /* male-iconSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "male-iconSelected@2x.png"; sourceTree = "<group>"; };
 		8B3AA4221C43FE7A00C025F9 /* FriendModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendModel.h; sourceTree = "<group>"; };
 		8B3AA4231C43FE7A00C025F9 /* FriendModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendModel.m; sourceTree = "<group>"; };
-		8B4C0D351C4BB52F00FCE12C /* PinSquare@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinSquare@2x.png"; sourceTree = "<group>"; };
-		8B4C0D361C4BB52F00FCE12C /* PinSquareBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinSquareBlue@2x.png"; sourceTree = "<group>"; };
-		8B4C0D371C4BB52F00FCE12C /* PinSquareGray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PinSquareGray@2x.png"; sourceTree = "<group>"; };
-		8B4C0D381C4BB52F00FCE12C /* RoundPinBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RoundPinBlue@2x.png"; sourceTree = "<group>"; };
-		8B4C0D391C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SquarePinOrangeRound@2x.png"; sourceTree = "<group>"; };
+		8B61B04E1C53A60D006EAB07 /* RadarServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarServices.h; sourceTree = "<group>"; };
+		8B61B04F1C53A60D006EAB07 /* RadarServices.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarServices.m; sourceTree = "<group>"; };
+		8B61B06F1C549A8D006EAB07 /* RadarAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarAnnotation.h; sourceTree = "<group>"; };
+		8B61B0701C549A8D006EAB07 /* RadarAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarAnnotation.m; sourceTree = "<group>"; };
+		8B61B0711C549A8D006EAB07 /* RadarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarView.h; sourceTree = "<group>"; };
+		8B61B0721C549A8D006EAB07 /* RadarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarView.m; sourceTree = "<group>"; };
+		8B61B0761C549B63006EAB07 /* UIView+AddHexagone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AddHexagone.h"; sourceTree = "<group>"; };
+		8B61B0771C549B63006EAB07 /* UIView+AddHexagone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AddHexagone.m"; sourceTree = "<group>"; };
+		8B61B0791C549C87006EAB07 /* RadarDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarDetailViewController.h; sourceTree = "<group>"; };
+		8B61B07A1C549C87006EAB07 /* RadarDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarDetailViewController.m; sourceTree = "<group>"; };
+		8B61B07B1C549C87006EAB07 /* RadarFriendDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarFriendDetailViewController.h; sourceTree = "<group>"; };
+		8B61B07C1C549C87006EAB07 /* RadarFriendDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarFriendDetailViewController.m; sourceTree = "<group>"; };
+		8B61B07F1C54A289006EAB07 /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewController.h; sourceTree = "<group>"; };
+		8B61B0801C54A289006EAB07 /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewController.m; sourceTree = "<group>"; };
+		8B61B0821C54C8A2006EAB07 /* meetupPn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "meetupPn@2x.png"; sourceTree = "<group>"; };
+		8B61B0831C54C8A2006EAB07 /* meetupSelectedPin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "meetupSelectedPin@2x.png"; sourceTree = "<group>"; };
+		8B61B0841C54C8A2006EAB07 /* userPin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userPin@2x.png"; sourceTree = "<group>"; };
+		8B61B0851C54C8A2006EAB07 /* UserPinSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UserPinSelected@2x.png"; sourceTree = "<group>"; };
+		8B61B08A1C54EAA9006EAB07 /* slidercircle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slidercircle@2x.png"; sourceTree = "<group>"; };
+		8B61B08D1C571D2F006EAB07 /* SearchFriendViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchFriendViewController.h; sourceTree = "<group>"; };
+		8B61B08E1C571D2F006EAB07 /* SearchFriendViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchFriendViewController.m; sourceTree = "<group>"; };
+		8B61B0911C573054006EAB07 /* CustomSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomSlider.h; sourceTree = "<group>"; };
+		8B61B0921C573054006EAB07 /* CustomSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomSlider.m; sourceTree = "<group>"; };
+		8B61B0931C573054006EAB07 /* GBSliderBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSliderBubbleView.h; sourceTree = "<group>"; };
+		8B61B0941C573054006EAB07 /* GBSliderBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSliderBubbleView.m; sourceTree = "<group>"; };
+		8B61B0981C575881006EAB07 /* AddFriend@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AddFriend@2x.png"; sourceTree = "<group>"; };
 		8BC66CA31C4751D3002D61FF /* upArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "upArrow@2x.png"; sourceTree = "<group>"; };
 		8BC66CA71C4776FC002D61FF /* RadarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadarViewController.h; sourceTree = "<group>"; };
 		8BC66CA81C4776FC002D61FF /* RadarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RadarViewController.m; sourceTree = "<group>"; };
@@ -427,6 +459,7 @@
 		666C35AA1C147CAE00B9C1A9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8B61B0971C575881006EAB07 /* Profile */,
 				8B4C0D341C4BB52F00FCE12C /* Radar */,
 				8BC66CAE1C479394002D61FF /* backCpy@2x.png */,
 				8BC66CA31C4751D3002D61FF /* upArrow@2x.png */,
@@ -647,6 +680,8 @@
 		66AE3C4E1C13025A00A0238F /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				8B61B0901C573054006EAB07 /* GBSliderBubbleViewClass */,
+				8B61B0751C549B63006EAB07 /* Categories */,
 				8BC66CB01C47971E002D61FF /* TableViewPullView */,
 				8BC66CAA1C478587002D61FF /* BlockOperationWithIdentifire */,
 				8B00A4461C45666F00DD381C /* CustomPicker */,
@@ -789,6 +824,7 @@
 		8B28FFA71C3C12C400CA785F /* Tab1 */ = {
 			isa = PBXGroup;
 			children = (
+				8B61B08C1C571D12006EAB07 /* SearchFriendVC */,
 				8B28FFAB1C3C12DA00CA785F /* FriendListVC */,
 			);
 			path = Tab1;
@@ -831,11 +867,11 @@
 		8B4C0D341C4BB52F00FCE12C /* Radar */ = {
 			isa = PBXGroup;
 			children = (
-				8B4C0D351C4BB52F00FCE12C /* PinSquare@2x.png */,
-				8B4C0D361C4BB52F00FCE12C /* PinSquareBlue@2x.png */,
-				8B4C0D371C4BB52F00FCE12C /* PinSquareGray@2x.png */,
-				8B4C0D381C4BB52F00FCE12C /* RoundPinBlue@2x.png */,
-				8B4C0D391C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png */,
+				8B61B08A1C54EAA9006EAB07 /* slidercircle@2x.png */,
+				8B61B0821C54C8A2006EAB07 /* meetupPn@2x.png */,
+				8B61B0831C54C8A2006EAB07 /* meetupSelectedPin@2x.png */,
+				8B61B0841C54C8A2006EAB07 /* userPin@2x.png */,
+				8B61B0851C54C8A2006EAB07 /* UserPinSelected@2x.png */,
 			);
 			path = Radar;
 			sourceTree = "<group>";
@@ -853,6 +889,54 @@
 			path = PPImageScrollingTableViewCell;
 			sourceTree = "<group>";
 		};
+		8B61B06E1C549A8D006EAB07 /* RadarView */ = {
+			isa = PBXGroup;
+			children = (
+				8B61B06F1C549A8D006EAB07 /* RadarAnnotation.h */,
+				8B61B0701C549A8D006EAB07 /* RadarAnnotation.m */,
+				8B61B0711C549A8D006EAB07 /* RadarView.h */,
+				8B61B0721C549A8D006EAB07 /* RadarView.m */,
+			);
+			path = RadarView;
+			sourceTree = "<group>";
+		};
+		8B61B0751C549B63006EAB07 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				8B61B0761C549B63006EAB07 /* UIView+AddHexagone.h */,
+				8B61B0771C549B63006EAB07 /* UIView+AddHexagone.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		8B61B08C1C571D12006EAB07 /* SearchFriendVC */ = {
+			isa = PBXGroup;
+			children = (
+				8B61B08D1C571D2F006EAB07 /* SearchFriendViewController.h */,
+				8B61B08E1C571D2F006EAB07 /* SearchFriendViewController.m */,
+			);
+			path = SearchFriendVC;
+			sourceTree = "<group>";
+		};
+		8B61B0901C573054006EAB07 /* GBSliderBubbleViewClass */ = {
+			isa = PBXGroup;
+			children = (
+				8B61B0911C573054006EAB07 /* CustomSlider.h */,
+				8B61B0921C573054006EAB07 /* CustomSlider.m */,
+				8B61B0931C573054006EAB07 /* GBSliderBubbleView.h */,
+				8B61B0941C573054006EAB07 /* GBSliderBubbleView.m */,
+			);
+			path = GBSliderBubbleViewClass;
+			sourceTree = "<group>";
+		};
+		8B61B0971C575881006EAB07 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				8B61B0981C575881006EAB07 /* AddFriend@2x.png */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
 		8BC66CA51C4776C0002D61FF /* Tab5 */ = {
 			isa = PBXGroup;
 			children = (
@@ -864,8 +948,15 @@
 		8BC66CA61C4776E0002D61FF /* RadarViewController */ = {
 			isa = PBXGroup;
 			children = (
+				8B61B0791C549C87006EAB07 /* RadarDetailViewController.h */,
+				8B61B07A1C549C87006EAB07 /* RadarDetailViewController.m */,
+				8B61B07B1C549C87006EAB07 /* RadarFriendDetailViewController.h */,
+				8B61B07C1C549C87006EAB07 /* RadarFriendDetailViewController.m */,
+				8B61B06E1C549A8D006EAB07 /* RadarView */,
 				8BC66CA71C4776FC002D61FF /* RadarViewController.h */,
 				8BC66CA81C4776FC002D61FF /* RadarViewController.m */,
+				8B61B07F1C54A289006EAB07 /* PageViewController.h */,
+				8B61B0801C54A289006EAB07 /* PageViewController.m */,
 			);
 			path = RadarViewController;
 			sourceTree = "<group>";
@@ -921,6 +1012,8 @@
 				8BDD14071C434BD50073403E /* UserService.m */,
 				8BDD14081C434BD50073403E /* WebConstants.h */,
 				8BDD14091C434BD50073403E /* WebServiceDelegate.h */,
+				8B61B04E1C53A60D006EAB07 /* RadarServices.h */,
+				8B61B04F1C53A60D006EAB07 /* RadarServices.m */,
 			);
 			path = APIs;
 			sourceTree = "<group>";
@@ -1198,6 +1291,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B61B0871C54C8A2006EAB07 /* meetupSelectedPin@2x.png in Resources */,
+				8B61B0861C54C8A2006EAB07 /* meetupPn@2x.png in Resources */,
 				66AE3C291C12ABC900A0238F /* LaunchScreen.storyboard in Resources */,
 				666C360D1C1BE12500B9C1A9 /* lock@2x.png in Resources */,
 				8B28FFD41C3D86D000CA785F /* offline-icon-with-text@2x.png in Resources */,
@@ -1208,10 +1303,8 @@
 				66AE3C5C1C13025A00A0238F /* fold.caf in Resources */,
 				8BDD12FD1C421DAB0073403E /* tab3@2x.png in Resources */,
 				8BEF0DAE1C38D65E00A78BB3 /* menu-button@2x.png in Resources */,
-				8B4C0D3E1C4BB52F00FCE12C /* SquarePinOrangeRound@2x.png in Resources */,
 				8BC66CA41C4751D3002D61FF /* upArrow@2x.png in Resources */,
 				8BC66CB51C47971E002D61FF /* blueArrow.png in Resources */,
-				8B4C0D3C1C4BB52F00FCE12C /* PinSquareGray@2x.png in Resources */,
 				66AE3C5B1C13025A00A0238F /* bloom.caf in Resources */,
 				8BDD14721C434BD50073403E /* iron.jpg in Resources */,
 				666C36241C1D233300B9C1A9 /* female-icon@2x.png in Resources */,
@@ -1225,9 +1318,8 @@
 				8B28FFB91C3D71F700CA785F /* tick-green@2x.png in Resources */,
 				8BCD02201C2B17CA00C81E3C /* icon29.png in Resources */,
 				666C35AC1C147CAE00B9C1A9 /* homescreen_logo@2x.png in Resources */,
-				8B4C0D3A1C4BB52F00FCE12C /* PinSquare@2x.png in Resources */,
 				666C36211C1D22CB00B9C1A9 /* profile-placeholder@2x.png in Resources */,
-				8B4C0D3D1C4BB52F00FCE12C /* RoundPinBlue@2x.png in Resources */,
+				8B61B0991C575881006EAB07 /* AddFriend@2x.png in Resources */,
 				8B28FFC51C3D778900CA785F /* sports-icon@2x.png in Resources */,
 				8B28FFCF1C3D852800CA785F /* friendship-already-icon@2x.png in Resources */,
 				8B28FFC41C3D778900CA785F /* settings-icon@2x.png in Resources */,
@@ -1236,6 +1328,7 @@
 				8B28FFD01C3D852800CA785F /* friendship-ask-icon@2x.png in Resources */,
 				8B28FFBE1C3D741000CA785F /* friendship@2x.png in Resources */,
 				8BDD12FE1C421DAB0073403E /* tab4@2x.png in Resources */,
+				8B61B08B1C54EAA9006EAB07 /* slidercircle@2x.png in Resources */,
 				8BC66CAF1C479394002D61FF /* backCpy@2x.png in Resources */,
 				8BCD02231C2B19FF00C81E3C /* icon 60.png in Resources */,
 				8BDD13041C422FD70073403E /* tab-sub2@2x.png in Resources */,
@@ -1248,7 +1341,9 @@
 				8BEF0DAD1C38D65E00A78BB3 /* menu-button.png in Resources */,
 				8B28FFB61C3D71A100CA785F /* ChatCounts@2x.png in Resources */,
 				8BDD12FB1C421DAB0073403E /* tab1@2x.png in Resources */,
+				8B61B0891C54C8A2006EAB07 /* UserPinSelected@2x.png in Resources */,
 				8B3AA4211C43F56D00C025F9 /* male-iconSelected@2x.png in Resources */,
+				8B61B0881C54C8A2006EAB07 /* userPin@2x.png in Resources */,
 				8BDD13031C422FD70073403E /* tab-sub1@2x.png in Resources */,
 				8BC66CB61C47971E002D61FF /* blueArrow@2x.png in Resources */,
 				666C35B21C14991700B9C1A9 /* person-icon@2x.png in Resources */,
@@ -1258,7 +1353,6 @@
 				666C35B11C14991700B9C1A9 /* password@2x.png in Resources */,
 				666C361F1C1C9CF700B9C1A9 /* Assets.xcassets in Resources */,
 				666C361D1C1C9C7600B9C1A9 /* LaunchImage.jpg in Resources */,
-				8B4C0D3B1C4BB52F00FCE12C /* PinSquareBlue@2x.png in Resources */,
 				8B28FFBD1C3D741000CA785F /* chat-icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1286,7 +1380,9 @@
 				666C35A91C141AEA00B9C1A9 /* MakeProfileViewController.m in Sources */,
 				66AE3C4D1C13006000A0238F /* TabbarViewController.m in Sources */,
 				666C36111C1C62B400B9C1A9 /* UserModel.m in Sources */,
+				8B61B07D1C549C87006EAB07 /* RadarDetailViewController.m in Sources */,
 				8BEF0DAB1C38D65E00A78BB3 /* SlideNavigationContorllerAnimatorSlide.m in Sources */,
+				8B61B0811C54A289006EAB07 /* PageViewController.m in Sources */,
 				66AE3C211C12ABC900A0238F /* ViewController.m in Sources */,
 				66AE3C791C13114B00A0238F /* UIViewController+CCMPopupAnimation.m in Sources */,
 				8B28FFAE1C3C130D00CA785F /* FriendListViewController.m in Sources */,
@@ -1296,13 +1392,17 @@
 				8BEF0DBA1C38ED7700A78BB3 /* ProfileViewController.m in Sources */,
 				8BDD12F51C40E9FA0073403E /* CommansUtility.m in Sources */,
 				8BDD14711C434BD50073403E /* Reachability.m in Sources */,
+				8B61B0781C549B63006EAB07 /* UIView+AddHexagone.m in Sources */,
 				8BDD149A1C434BD50073403E /* NSNull+JSON.m in Sources */,
 				8BDD14861C434BD50073403E /* ASIS3ObjectRequest.m in Sources */,
 				8BDD12F11C40DEAA0073403E /* PPImageScrollingTableViewCell.m in Sources */,
 				8BDD12EF1C40DEAA0073403E /* PPCollectionViewCell.m in Sources */,
+				8B61B08F1C571D2F006EAB07 /* SearchFriendViewController.m in Sources */,
 				8BDD14781C434BD50073403E /* ASIHTTPRequest.m in Sources */,
 				66AE3C1E1C12ABC900A0238F /* AppDelegate.m in Sources */,
+				8B61B0501C53A60E006EAB07 /* RadarServices.m in Sources */,
 				66AE3C741C13114B00A0238F /* CCMPopupSegue.m in Sources */,
+				8B61B0741C549A8D006EAB07 /* RadarView.m in Sources */,
 				8BDD147E1C434BD50073403E /* ASICloudFilesContainerRequest.m in Sources */,
 				8BC66CB71C47971E002D61FF /* TableViewPullView.m in Sources */,
 				8BDD147B1C434BD50073403E /* ASIWebPageRequest.m in Sources */,
@@ -1321,10 +1421,12 @@
 				8BDD14821C434BD50073403E /* ASICloudFilesRequest.m in Sources */,
 				8BDD147F1C434BD50073403E /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
 				8BC66CA91C4776FC002D61FF /* RadarViewController.m in Sources */,
+				8B61B07E1C549C87006EAB07 /* RadarFriendDetailViewController.m in Sources */,
 				66AE3C721C13114B00A0238F /* CCMCustomAnimation.m in Sources */,
 				66AE3C591C13025A00A0238F /* DCPathButton.m in Sources */,
 				66AE3C771C13114B00A0238F /* UIImage+ImageEffects.m in Sources */,
 				8B00A4491C45666F00DD381C /* CustomDatePicker.m in Sources */,
+				8B61B0731C549A8D006EAB07 /* RadarAnnotation.m in Sources */,
 				8BDD14751C434BD50073403E /* ASIDataDecompressor.m in Sources */,
 				8BDD14841C434BD50073403E /* ASIS3BucketObject.m in Sources */,
 				8BEF0DAC1C38D65E00A78BB3 /* SlideNavigationContorllerAnimatorSlideAndFade.m in Sources */,
@@ -1337,11 +1439,13 @@
 				666C36081C15F53500B9C1A9 /* Response.m in Sources */,
 				66AE3C731C13114B00A0238F /* CCMPopupAnimation.m in Sources */,
 				8B3AA4241C43FE7A00C025F9 /* FriendModel.m in Sources */,
+				8B61B0951C573054006EAB07 /* CustomSlider.m in Sources */,
 				666C36171C1C6CE200B9C1A9 /* HUD.m in Sources */,
 				8BEF0DAA1C38D65E00A78BB3 /* SlideNavigationContorllerAnimatorScaleAndFade.m in Sources */,
 				8BDD14761C434BD50073403E /* ASIDownloadCache.m in Sources */,
 				66AE3C5A1C13025A00A0238F /* DCPathItemButton.m in Sources */,
 				66AE3C1B1C12ABC900A0238F /* main.m in Sources */,
+				8B61B0961C573054006EAB07 /* GBSliderBubbleView.m in Sources */,
 				8BEF0DB31C38D83000A78BB3 /* RightMenuViewController.m in Sources */,
 				8BDD14771C434BD50073403E /* ASIFormDataRequest.m in Sources */,
 				8BDD14741C434BD50073403E /* ASIDataCompressor.m in Sources */,

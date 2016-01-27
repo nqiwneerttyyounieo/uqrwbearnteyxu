@@ -28,13 +28,23 @@ static CGFloat const kBounceValue = 20.0f;
 {
     [super awakeFromNib];
     
-    self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panThisCell:)];
-    self.panRecognizer.delegate = self;
-    [self.myContentView addGestureRecognizer:self.panRecognizer];
-
-    [self addLeftLayer:self.btnChat];
+  
 
 }
+
+-(void)makeItSwipable:(BOOL)makeItSwipable{
+    if(makeItSwipable){
+        self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panThisCell:)];
+        self.panRecognizer.delegate = self;
+        [self.myContentView addGestureRecognizer:self.panRecognizer];
+        
+        [self addLeftLayer:self.btnChat];
+    }
+    else{
+        
+    }
+}
+
 
 
 -(void)addLeftLayer:(UIView *)viewObj{

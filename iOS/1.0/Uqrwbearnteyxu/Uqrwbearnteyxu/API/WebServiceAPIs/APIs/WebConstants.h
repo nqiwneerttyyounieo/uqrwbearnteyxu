@@ -11,13 +11,21 @@
 
 
 #define baseURL @"http://5.189.161.31"
+//#define baseURL @"http://uxwebapi.twigsoftwares.com"
+
 
 #define loginURL [NSString stringWithFormat:@"%@/%@",baseURL,@"token?"]
 #define registerURL [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Account/Register"]
 #define forgotPasswordURL [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Account/ForgotPassword"]
 #define makeProfileURL [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Account/UpdateUser"]
 
-#define getFriendList [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Relationships/GetRelationships?"]
+#define getFriendList [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Profile/UserFriends?"]
+#define searchFriendList [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Relationships/GetPeopleRelationships?"]
 
+#define addFriendRequest [NSString stringWithFormat:@"%@/%@",baseURL,@"api/Relationships"]
+
+
+
+#define radarURL [NSString stringWithFormat:@"%@/%@",baseURL,@"/api/Radar/UserRadar"]
 
 #endif /* WebConstants_h */

@@ -25,6 +25,8 @@
 @property (strong, nonatomic) NSString *strThumbImgPath;
 @property (strong, nonatomic) NSString *strUserName;
 @property (strong, nonatomic) NSString *strClientUserName;
+@property (strong, nonatomic) NSMutableArray *arrayOfSports;
+@property (strong, nonatomic) NSString *strRelationshipStatus;
 
 @property (readwrite, nonatomic) BOOL isRequestFriend;
 

@@ -1,12 +1,14 @@
 //
-//  FriendListViewController.m
+//  SearchFriendViewController.m
 //  Uqrwbearnteyxu
 //
-//  Created by Developer on 05/01/16.
+//  Created by Developer on 26/01/16.
 //  Copyright © 2016 Rahul N. Mane. All rights reserved.
 //
 
-#import "FriendListViewController.h"
+#import "SearchFriendViewController.h"
+#import "FriendsSwipeableTableViewCell.h"
+
 #import "SlideNavigationController.h"
 #import "FriendsRequestSwipeableTableViewCell.h"
 #import "FriendsSwipeableTableViewCell.h"
@@ -22,15 +24,15 @@
 
 #define kServerPagingLimit 10
 
-
-@interface FriendListViewController ()<UITableViewDataSource,UITableViewDelegate,WebServiceDelegate>
+@interface SearchFriendViewController()<WebServiceDelegate,UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 @property(nonatomic,weak)IBOutlet UITableView *tableview;
 @property (nonatomic, strong) NSCache *eventImageCache;
 @property (nonatomic, strong) NSOperationQueue *eventImageOperationQueue;
 
+
 @end
 
-@implementation FriendListViewController{
+@implementation SearchFriendViewController{
     FriendsService *friendService;
     UserModel *loggedInUser;
     NSMutableArray *arrayOFData;
@@ -38,7 +40,9 @@
     BOOL _reloading;
     int currentPageNumber;
     int previousPageEventCount;
-
+    
+    UITapGestureRecognizer *tapGuesture;
+    UISearchBar *searchBar;
 }
 
 - (void)viewDidLoad {
@@ -48,16 +52,18 @@
     self.eventImageCache=[[NSCache alloc]init];
     self.eventImageOperationQueue = [[NSOperationQueue alloc]init];
     self.eventImageOperationQueue.maxConcurrentOperationCount = 2;
-
+    
     if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
-
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.tabBarController.navigationController.navigationBar.hidden = YES;
+    [self webAPIForFriendList:0 andTextToSearch:@""];
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -71,14 +77,14 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 #pragma mark - SetUp
 #pragma mark
@@ -86,12 +92,11 @@
 -(void)setUp{
     [self setUpSearchBar];
     [self setUpPullUpToLoadMore];
-    [self webAPIForFriendList:0];
     
 }
 
 -(void)setUpSearchBar{
-    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
+    searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
     searchBar.delegate = self;
     
     UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
@@ -114,10 +119,22 @@
     
 }
 
+-(void)addTapGuesture{
+    tapGuesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGuestureFired:)];
+    [self.navigationController.view addGestureRecognizer:tapGuesture];
+    
+}
+
+-(void)tapGuestureFired:(UITapGestureRecognizer *)tap{
+    [self.navigationController.view removeGestureRecognizer:tapGuesture];
+    [searchBar resignFirstResponder];
+    
+}
+
 #pragma mark - Call web service
 #pragma mark
 
--(void)webAPIForFriendList:(int)tag{
+-(void)webAPIForFriendList:(int)tag andTextToSearch:(NSString *)text{
     if(tag==0){  // that means we are loading events freshly
         previousPageEventCount=0;
         currentPageNumber=0;
@@ -128,14 +145,14 @@
         currentPageNumber++;
         previousPageEventCount=(int)arrayOFData.count;
     }
-
+    
     loggedInUser = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
-
+    
     
     friendService = [[FriendsService alloc]init];
     friendService.delegate=self;
     friendService.tag = tag;
-    [friendService getFriendListOnUserId:loggedInUser.strUserId andPageNo:currentPageNumber];
+    [friendService getAllUserList:loggedInUser.strUserId andPageNo:currentPageNumber forSearchedText:text];
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
 }
@@ -144,13 +161,13 @@
     
     _reloading = YES;
     
-    [self webAPIForFriendList:1];
+    [self webAPIForFriendList:1 andTextToSearch:@""];
 }
 
 
 
 #pragma mark - Tableview delegates
-#pragma mark 
+#pragma mark
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -162,7 +179,7 @@
     else{
         [self.tableview.tableFooterView setHidden:YES];
     }
-
+    
     return arrayOFData.count;
 }
 
@@ -170,10 +187,7 @@
 {
     FriendModel *friendModel = [arrayOFData objectAtIndex:indexPath.row];
     
-    if(!friendModel.isRequestFriend){
         FriendsSwipeableTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"friendsSwipableCell"];
-        
-        [cell makeItSwipable:YES];
         
         [VIewUtility addHexagoneShapeMaskFor:cell.imgViewFriendsProfile];
         
@@ -181,7 +195,7 @@
         
         NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%@)",friendModel.strClientUserName,friendModel.strMutualFriends]];
         [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0] range:NSMakeRange(0, friendModel.strClientUserName.length)];
-
+        
         cell.lblFriendName.attributedText = string;
         
         
@@ -231,28 +245,12 @@
             operation.identifier=friendModel.strThumbImgPath;
             [self.eventImageOperationQueue addOperation:operation];
         }
-
         
         
-
         
-        return cell;
-    }
-    else{
-        FriendsRequestSwipeableTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"friendsRequestSwipableCell"];
-        [VIewUtility addHexagoneShapeMaskFor:cell.imgViewFriendsProfile];
-        cell.lblFriendName.text = friendModel.strUserName;
-        cell.lblMutualFriend.text  = [NSString stringWithFormat:@"%@ mutual friends",friendModel.strMutualFriends];
-        cell.lblMutualSports.text  = [NSString stringWithFormat:@"%@ mutual friends",friendModel.strMutualSports];
         
-        CALayer *layer = [CALayer layer];
-        layer.frame = CGRectMake(0, 48, self.view.frame.size.width, 2);
-        layer.backgroundColor = [UIColor colorWithRed:63.0/255.0 green:84.0/255.0 blue:90.0/255.0 alpha:1].CGColor;
-        [cell.layer addSublayer:layer];
-
         
         return cell;
-    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -261,12 +259,12 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     FriendModel *friendModel = [arrayOFData objectAtIndex:indexPath.row];
-
+    
     ProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     vc.friendModel = friendModel;
     
     [self.navigationController pushViewController:vc animated:YES];
-
+    
 }
 #pragma mark - Tableview Scroll view Delegate.
 #pragma mark -
@@ -313,9 +311,38 @@
     
 }
 
+#pragma mark - Search Bar
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    if ([searchText length] == 0) {
+        [self performSelector:@selector(hideKeyboardWithSearchBar:) withObject:searchBar afterDelay:0];
+    }
+}
+
+- (void)hideKeyboardWithSearchBar:(UISearchBar *)searchBar{
+    [self webAPIForFriendList:0 andTextToSearch:searchBar.text];
+
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    
+}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    if(searchBar.text.length){
+        [self webAPIForFriendList:0 andTextToSearch:searchBar.text];
+    }
+    
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+    [self addTapGuesture];
+}
+
 
 #pragma mark - Button delegates
-#pragma mark 
+#pragma mark
 
 -(IBAction)btnMenuClicked:(id)sender{
     [[SlideNavigationController sharedInstance] openMenu:MenuRight withCompletion:^{
@@ -328,42 +355,40 @@
 
 - (void)request:(id)serviceRequest didFailWithError:(NSError *)error{
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [[[UIAlertView alloc]initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
     
 }
 - (void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
     [MBProgressHUD hideHUDForView:self.view animated:YES];
     
     
-        FriendsService *service=(FriendsService *)serviceRequest;
-        if(service.tag==0){
-            if(responseData.count>0){
-                for(int k=0;k<responseData.count;k++){
-                    id model=[responseData objectAtIndex:k];
-                    if([model isKindOfClass:[FriendModel class]]){
-                        [arrayOFData addObject:(FriendModel *)model];
-                    }
+    FriendsService *service=(FriendsService *)serviceRequest;
+    if(service.tag==0){
+        if(responseData.count>0){
+            for(int k=0;k<responseData.count;k++){
+                id model=[responseData objectAtIndex:k];
+                if([model isKindOfClass:[FriendModel class]]){
+                    [arrayOFData addObject:(FriendModel *)model];
                 }
             }
-            [self.tableview reloadData];
+        }
+        [self.tableview reloadData];
+        
+    }
+    else if(service.tag==1){
+        if(responseData.count>0){
+            for(int k=0;k<responseData.count;k++){
+                
+                id model=[responseData objectAtIndex:k];
+                if([model isKindOfClass:[FriendModel class]]){
+                    [arrayOFData addObject:(FriendModel *)model];
+                }
+            }
             
         }
-        else if(service.tag==1){
-            if(responseData.count>0){
-                for(int k=0;k<responseData.count;k++){
-                    
-                    id model=[responseData objectAtIndex:k];
-                    if([model isKindOfClass:[FriendModel class]]){
-                        [arrayOFData addObject:(FriendModel *)model];
-                    }
-                }
-                
-            }
-            _reloading = NO;
-            [refreshHeaderView tableViewPullViewScrollViewDataSourceDidFinishedLoading:self.tableview];
-            [self.tableview reloadData];
-        }
+        _reloading = NO;
+        [refreshHeaderView tableViewPullViewScrollViewDataSourceDidFinishedLoading:self.tableview];
+        [self.tableview reloadData];
+    }
 }
-
 
 @end

@@ -17,4 +17,10 @@
 
 
 -(NSMutableArray *)parseFriendListData:(NSData *)responseData andError:(NSError **)error;
+-(NSMutableArray *)parseSearchFriendListData:(NSData *)responseData andError:(NSError **)error;
+-(NSMutableArray *)parseSendFriendRequestData:(NSData *)responseData andError:(NSError **)error;
+
+
+-(NSMutableArray *)parseRadarListData:(NSData *)responseData andError:(NSError **)error;
+
 @end

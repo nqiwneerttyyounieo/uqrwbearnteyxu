@@ -38,8 +38,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUp];
-   // self.txtEmail.text = @"rahul70@gmail.com";
-   // self.txtPassword.text = @"Rahul@123";
+    self.txtEmail.text = @"tusharit25@gmail.com";
+    self.txtPassword.text = @"Tushar#123";
     
     // Do any additional setup after loading the view.
     
