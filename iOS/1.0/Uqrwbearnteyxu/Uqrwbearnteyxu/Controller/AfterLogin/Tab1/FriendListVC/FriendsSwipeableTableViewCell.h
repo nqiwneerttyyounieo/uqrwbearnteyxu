@@ -19,6 +19,8 @@
 
 @property (nonatomic, weak) id <FriendsSwipeableTableViewCellDelegate> delegate;
 - (void)openCell;
+-(void)closeCell;
+
 -(void)makeItSwipable:(BOOL)makeItSwipable;
 
 @property (weak, nonatomic) IBOutlet UILabel *lblFriendName;

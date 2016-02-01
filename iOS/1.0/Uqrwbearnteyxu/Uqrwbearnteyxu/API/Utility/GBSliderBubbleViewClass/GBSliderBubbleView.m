@@ -14,8 +14,8 @@
 #define kFont [UIFont systemFontOfSize:kFontSize]
 #define kBoxWidth 50
 #define kShowHideAnimationDurtaion 0.5f
-#define kSliderHeight 10
-#define kSliderBubbleViewMargin 20
+#define kSliderHeight 3
+#define kSliderBubbleViewMargin 35
 
 @implementation GBSliderBubbleView
 
@@ -73,6 +73,7 @@
     CGRect initFrame = CGRectMake(0.0f, 0.0f, kBoxWidth, 20.0f);
     self.bubbleView = [[UIView alloc]initWithFrame:initFrame];
     self.bubbleView.center = CGPointMake([self xPositionFromSliderValue:self.slider],  self.slider.frame.origin.y - kSliderBubbleViewMargin);
+    //self.bubbleView.backgroundColor = [UIColor redColor];
     
     UIImageView *boxImage = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, kBoxWidth, 20.0f)];
     [boxImage setImage:_bubbleImage];

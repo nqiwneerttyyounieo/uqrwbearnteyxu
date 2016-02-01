@@ -19,6 +19,9 @@
     [encoder encodeObject:self.strClientUserName forKey:@"clientUserName"];
     [encoder encodeObject:self.strProfileURLThumb forKey:@"thumbURL"];
     [encoder encodeObject:self.strProfileURL forKey:@"profileURL"];
+    [encoder encodeObject:self.strBirthdate forKey:@"birthdate"];
+    [encoder encodeObject:self.arrayOfFriends forKey:@"arrayOfFriends"];
+    [encoder encodeObject:self.arrayOfSports forKey:@"arrayOfSports"];
 
 }
 
@@ -32,7 +35,9 @@
         self.strClientUserName = [decoder decodeObjectForKey:@"clientUserName"];
         self.strProfileURL = [decoder decodeObjectForKey:@"profileURL"];
         self.strProfileURLThumb = [decoder decodeObjectForKey:@"thumbURL"];
-
+        self.strBirthdate = [decoder decodeObjectForKey:@"birthdate"];
+        self.arrayOfSports = [decoder decodeObjectForKey:@"arrayOfSports"];
+        self.arrayOfFriends = [decoder decodeObjectForKey:@"arrayOfFriends"];
     }
     return self;
 }

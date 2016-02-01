@@ -98,7 +98,7 @@
 -(void)setUpSearchBar{
     searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
     searchBar.delegate = self;
-    
+        searchBar.placeholder = @"Search users";
     UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
     self.navigationItem.titleView = searchBar;
 }
@@ -191,8 +191,12 @@
         
         [VIewUtility addHexagoneShapeMaskFor:cell.imgViewFriendsProfile];
         
-        cell.lblLastMessage.text  = @"";
-        
+        cell.lblLastMessage.text  = friendModel.strUserStatus;
+    
+    
+    UIImageView *imgView = (UIImageView *)[cell viewWithTag:104];
+    imgView.backgroundColor =[UIColor redColor];
+    
         NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%@)",friendModel.strClientUserName,friendModel.strMutualFriends]];
         [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0] range:NSMakeRange(0, friendModel.strClientUserName.length)];
         
@@ -355,7 +359,7 @@
 
 - (void)request:(id)serviceRequest didFailWithError:(NSError *)error{
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    
+      [[[UIAlertView alloc]initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
 }
 - (void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
     [MBProgressHUD hideHUDForView:self.view animated:YES];

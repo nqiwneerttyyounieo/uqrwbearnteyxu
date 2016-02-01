@@ -282,9 +282,15 @@
 
 
 -(void)webAPIToLogin{
+
+    NSString *deviceToken = [[NSUserDefaults standardUserDefaults]valueForKey:@"apnsToken"];
+    
+    if(deviceToken.length==0){
+        deviceToken= @"abc";
+    }
     self.userWebAPI = [[UserService alloc]init];
     self.userWebAPI.delegate=self;
-    [self.userWebAPI loginWithUserName:self.txtEmail.text andPassword:self.txtPassword.text];
+    [self.userWebAPI loginWithUserName:self.txtEmail.text andPassword:self.txtPassword.text token:deviceToken];
     
     [[HUD sharedInstance]showHUD:self.view];
 }

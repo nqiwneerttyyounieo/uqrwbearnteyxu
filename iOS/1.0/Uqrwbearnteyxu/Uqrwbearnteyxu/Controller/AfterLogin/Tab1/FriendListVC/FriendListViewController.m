@@ -23,7 +23,7 @@
 #define kServerPagingLimit 10
 
 
-@interface FriendListViewController ()<UITableViewDataSource,UITableViewDelegate,WebServiceDelegate>
+@interface FriendListViewController ()<UITableViewDataSource,UITableViewDelegate,WebServiceDelegate,UISearchBarDelegate,FriendsSwipeableTableViewCellDelegate>
 @property(nonatomic,weak)IBOutlet UITableView *tableview;
 @property (nonatomic, strong) NSCache *eventImageCache;
 @property (nonatomic, strong) NSOperationQueue *eventImageOperationQueue;
@@ -39,6 +39,12 @@
     int currentPageNumber;
     int previousPageEventCount;
 
+    UITapGestureRecognizer *tapGuesture;
+    UISearchBar *searchBarObj;
+
+    NSMutableArray *arrayOfOpenCell;
+ 
+    FriendModel *selectedFriendRequestModel;
 }
 
 - (void)viewDidLoad {
@@ -53,11 +59,22 @@
         self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
 
+    UITabBarController *tabBarController = [self tabBarController];
+    UITabBar *tabBar = tabBarController.tabBar;
+    
+    for (UITabBarItem  *tab in tabBar.items) {
+        tab.image = [tab.image imageWithRenderingMode: UIImageRenderingModeAlwaysOriginal];
+      //  tab.selectedImage = [tab.image imageWithRenderingMode: UIImageRenderingModeAlwaysOriginal];
+    }
+    
 }
+
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     self.tabBarController.navigationController.navigationBar.hidden = YES;
+    [self webAPIForFriendList:0 withSearch:searchBarObj.text];
+
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -84,18 +101,19 @@
 #pragma mark
 
 -(void)setUp{
+    arrayOfOpenCell = [[NSMutableArray alloc]init];
+    
     [self setUpSearchBar];
     [self setUpPullUpToLoadMore];
-    [self webAPIForFriendList:0];
     
 }
 
 -(void)setUpSearchBar{
-    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
-    searchBar.delegate = self;
-    
-    UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBar];
-    self.navigationItem.titleView = searchBar;
+    searchBarObj = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
+    searchBarObj.delegate = self;
+    searchBarObj.placeholder = @"Search friends";
+    UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:searchBarObj];
+    self.navigationItem.titleView = searchBarObj;
 }
 
 -(void)setUpPullUpToLoadMore{
@@ -117,7 +135,7 @@
 #pragma mark - Call web service
 #pragma mark
 
--(void)webAPIForFriendList:(int)tag{
+-(void)webAPIForFriendList:(int)tag withSearch:(NSString *)searchText{
     if(tag==0){  // that means we are loading events freshly
         previousPageEventCount=0;
         currentPageNumber=0;
@@ -135,16 +153,34 @@
     friendService = [[FriendsService alloc]init];
     friendService.delegate=self;
     friendService.tag = tag;
-    [friendService getFriendListOnUserId:loggedInUser.strUserId andPageNo:currentPageNumber];
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [friendService getFriendListOnUserId:loggedInUser.strUserId andPageNo:currentPageNumber andSearchText:searchText];
+    [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
     
 }
+
+-(void)webAPIAcceptFriend:(FriendModel *)fModel{
+    friendService = [[FriendsService alloc]init];
+    friendService.tag = 2;
+    friendService.delegate=self;
+    [friendService acceptFriendRequestFromUserId:loggedInUser.strUserId andTo:fModel.strUserID];
+    [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
+}
+
+-(void)webAPIRejectFriend:(FriendModel *)fModel{
+    friendService = [[FriendsService alloc]init];
+    friendService.tag = 3;
+    friendService.delegate=self;
+    [friendService rejectFriendRequestFromUserId:loggedInUser.strUserId andTo:fModel.strUserID];
+    [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
+}
+
+
 
 - (void)reloadTableViewDataSource{
     
     _reloading = YES;
     
-    [self webAPIForFriendList:1];
+    [self webAPIForFriendList:1 withSearch:searchBarObj.text];
 }
 
 
@@ -174,12 +210,24 @@
         FriendsSwipeableTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"friendsSwipableCell"];
         
         [cell makeItSwipable:YES];
+        cell.delegate = self;
+        cell.tag = indexPath.row;
         
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [formatter setDateFormat:@"MM/dd/YYYY"];
+  
+        NSDate *birthDate = [formatter dateFromString:friendModel.strBithdate];
+                NSInteger age = [self ageFromBirthday:birthDate];
+
         [VIewUtility addHexagoneShapeMaskFor:cell.imgViewFriendsProfile];
+
+        cell.lblLastMessage.text  = @"Monday would be great. Can I bring the whole...";
         
-        cell.lblLastMessage.text  = @"";
+
         
-        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%@)",friendModel.strClientUserName,friendModel.strMutualFriends]];
+        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%ld)",friendModel.strClientUserName,(long)age]];
         [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0] range:NSMakeRange(0, friendModel.strClientUserName.length)];
 
         cell.lblFriendName.attributedText = string;
@@ -241,14 +289,75 @@
     else{
         FriendsRequestSwipeableTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"friendsRequestSwipableCell"];
         [VIewUtility addHexagoneShapeMaskFor:cell.imgViewFriendsProfile];
-        cell.lblFriendName.text = friendModel.strUserName;
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [formatter setDateFormat:@"MM/dd/YYYY"];
+        NSDate *birthDate = [formatter dateFromString:friendModel.strBithdate];
+        NSInteger age = [self ageFromBirthday:birthDate];
+
+        
+        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%ld)",friendModel.strClientUserName,(long)age]];
+        [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0] range:NSMakeRange(0, friendModel.strClientUserName.length)];
+        
+        cell.lblFriendName.attributedText = string;
+
         cell.lblMutualFriend.text  = [NSString stringWithFormat:@"%@ mutual friends",friendModel.strMutualFriends];
-        cell.lblMutualSports.text  = [NSString stringWithFormat:@"%@ mutual friends",friendModel.strMutualSports];
+        cell.lblMutualSports.text  = [NSString stringWithFormat:@"%@ mutual sports",friendModel.strMutualSports];
+
+        cell.btnAcceptRequest.tag = indexPath.row;
+        [cell.btnAcceptRequest addTarget:self action:@selector(btnAcceptRequestClicked:) forControlEvents:UIControlEventTouchDown];
+        
+        cell.btnRejectRequest.tag = indexPath.row;
+        [cell.btnRejectRequest addTarget:self action:@selector(btnRejectRequestClicked:) forControlEvents:UIControlEventTouchDown];
+        
         
         CALayer *layer = [CALayer layer];
         layer.frame = CGRectMake(0, 48, self.view.frame.size.width, 2);
         layer.backgroundColor = [UIColor colorWithRed:63.0/255.0 green:84.0/255.0 blue:90.0/255.0 alpha:1].CGColor;
         [cell.layer addSublayer:layer];
+
+        
+        UIImage *imageFromCache = [self.eventImageCache objectForKey:[NSString stringWithFormat:@"%@",friendModel.strUserID]];
+        if (imageFromCache) {
+            cell.imgViewFriendsProfile.image=imageFromCache;
+        }else{
+            
+            cell.imgViewFriendsProfile.image = nil;//user a placeholder later
+            BlockOperationWithIdentifier *operation = [BlockOperationWithIdentifier blockOperationWithBlock:^{
+                
+                NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:friendModel.strThumbImgPath]];
+                
+                UIImage *img = [UIImage imageWithData:imageData];
+                if (img) {
+                    [self.eventImageCache setObject:img forKey:[NSString stringWithFormat:@"%@",friendModel.strUserID]];
+                }
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    FriendsSwipeableTableViewCell *updateCell =(FriendsSwipeableTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+                    if (updateCell) {
+                        
+                        
+                        updateCell.imgViewFriendsProfile.layer.cornerRadius=3;
+                        updateCell.imgViewFriendsProfile.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                        updateCell.imgViewFriendsProfile.layer.borderWidth=0.75;
+                        updateCell.imgViewFriendsProfile.image = img;
+                        
+                        CATransition *transition = [CATransition animation];
+                        transition.duration = 0.75f;
+                        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                        transition.type = kCATransitionFade;
+                        
+                        [updateCell.imgViewFriendsProfile.layer addAnimation:transition forKey:nil];
+                        updateCell.imgViewFriendsProfile.clipsToBounds = YES;
+                        
+                    }
+                }];
+            }];
+            operation.queuePriority = NSOperationQueuePriorityNormal;
+            operation.identifier=friendModel.strThumbImgPath;
+            [self.eventImageOperationQueue addOperation:operation];
+        }
 
         
         return cell;
@@ -292,6 +401,71 @@
 {
 }
 
+#pragma mark - Swibale delegates
+#pragma mark 
+
+- (void)cellDidOpen:(UITableViewCell *)cell{
+    FriendsSwipeableTableViewCell *frSwipable = (FriendsSwipeableTableViewCell *)cell;
+    for (int k=0; k<arrayOfOpenCell.count; k++) {
+        FriendsSwipeableTableViewCell *tempCell = [arrayOfOpenCell objectAtIndex:k];
+        if(tempCell.tag == frSwipable.tag){
+            return;
+        }
+        [tempCell closeCell];
+    }
+    [arrayOfOpenCell removeAllObjects];
+    [arrayOfOpenCell addObject:frSwipable];
+    
+}
+
+
+- (void)cellDidClose:(UITableViewCell *)cell{
+    
+}
+
+#pragma mark - Search Bar
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    if ([searchText length] == 0) {
+        [self performSelector:@selector(hideKeyboardWithSearchBar:) withObject:searchBar afterDelay:0];
+    }
+}
+
+- (void)hideKeyboardWithSearchBar:(UISearchBar *)searchBar{
+   // [self webAPIForFriendList:0 andTextToSearch:searchBar.text];
+    
+    [self webAPIForFriendList:0 withSearch:searchBarObj.text];
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    
+}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    if(searchBar.text.length){
+       // [self webAPIForFriendList:0 andTextToSearch:searchBar.text];
+        [self webAPIForFriendList:0 withSearch:searchBarObj.text];
+    }
+    
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+    [self addTapGuesture];
+}
+
+-(void)addTapGuesture{
+    tapGuesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGuestureFired:)];
+    [self.navigationController.view addGestureRecognizer:tapGuesture];
+    
+}
+
+-(void)tapGuestureFired:(UITapGestureRecognizer *)tap{
+    [self.navigationController.view removeGestureRecognizer:tapGuesture];
+    [searchBarObj resignFirstResponder];
+    
+}
+
 
 #pragma mark - Handling Load more for table view.
 #pragma mark -
@@ -323,37 +497,110 @@
     }];
 }
 
+-(void)btnAcceptRequestClicked:(id)sender{
+    UIButton *btn = (UIButton *)sender;
+    FriendModel *frModel = [arrayOFData objectAtIndex:btn.tag];
+    if(frModel.isRequestFriend){
+        NSLog(@"Accept friedns");
+        [self webAPIAcceptFriend:frModel];
+    }
+}
+
+-(void)btnRejectRequestClicked:(id)sender{
+    UIButton *btn = (UIButton *)sender;
+    FriendModel *frModel = [arrayOFData objectAtIndex:btn.tag];
+
+    if(frModel.isRequestFriend){
+        NSLog(@"Reject friedns");
+        selectedFriendRequestModel = frModel;
+        [self alerForRejectFriend];
+    }
+    
+}
+
+- (void)alerForRejectFriend {
+    // open a alert with an OK and cancel button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"REJECT FRIEND REQUEST?" message:@"DO YOU REALLY WANT TO REJECT FRIEND REQUEST?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    alert.tag = 1;
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // the user clicked one of the OK/Cancel buttons
+    if(alert.tag == 1)
+    {
+        if(buttonIndex == alert.cancelButtonIndex)
+        {
+            NSLog(@"cancel");
+        }
+        else
+        {
+            if(selectedFriendRequestModel.isRequestFriend){
+                    [self webAPIRejectFriend:selectedFriendRequestModel];
+            }
+            else{
+                [[[UIAlertView alloc]initWithTitle:@"ERROR" message:@"Oops something went wrong.. This should not happen" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil]show];
+                
+            }
+        }
+    }
+    else if (alert.tag==2){
+        if(buttonIndex != alert.cancelButtonIndex){
+            
+        }
+    }
+}
+
+
+
 #pragma mark - Web service response
 #pragma mark
 
 - (void)request:(id)serviceRequest didFailWithError:(NSError *)error{
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [MBProgressHUD hideHUDForView:self.tabBarController.view animated:YES];
     [[[UIAlertView alloc]initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
-    
 }
+
 - (void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    
-    
+    [MBProgressHUD hideHUDForView:self.tabBarController.view animated:YES];
         FriendsService *service=(FriendsService *)serviceRequest;
         if(service.tag==0){
+            int friendRequestCounter = 0;
             if(responseData.count>0){
                 for(int k=0;k<responseData.count;k++){
                     id model=[responseData objectAtIndex:k];
                     if([model isKindOfClass:[FriendModel class]]){
-                        [arrayOFData addObject:(FriendModel *)model];
+                        FriendModel *frModel =(FriendModel *)model;
+                        if(frModel.isRequestFriend){
+                            friendRequestCounter++;
+                        }
+                        [arrayOFData addObject:frModel];
                     }
                 }
             }
             [self.tableview reloadData];
-            
+            if(friendRequestCounter>0){
+                [[self.tabBarController.tabBar.items objectAtIndex:0] setBadgeValue:[NSString stringWithFormat:@"%d",friendRequestCounter]];
+            }
+            else{
+                [[self.tabBarController.tabBar.items objectAtIndex:0] setBadgeValue:nil];
+            }
         }
         else if(service.tag==1){
+            int friendRequestCounter = 0;
+
             if(responseData.count>0){
+
                 for(int k=0;k<responseData.count;k++){
                     
                     id model=[responseData objectAtIndex:k];
                     if([model isKindOfClass:[FriendModel class]]){
+                        FriendModel *frModel =(FriendModel *)model;
+                        if(frModel.isRequestFriend){
+                            friendRequestCounter++;
+                        }
+
                         [arrayOFData addObject:(FriendModel *)model];
                     }
                 }
@@ -362,7 +609,33 @@
             _reloading = NO;
             [refreshHeaderView tableViewPullViewScrollViewDataSourceDidFinishedLoading:self.tableview];
             [self.tableview reloadData];
+            
+            if(friendRequestCounter>0){
+                [[self.tabBarController.tabBar.items objectAtIndex:0] setBadgeValue:[NSString stringWithFormat:@"%d",friendRequestCounter]];
+            }
+            else{
+                [[self.tabBarController.tabBar.items objectAtIndex:0] setBadgeValue:nil];
+            }
+
         }
+        else if(service.tag==2){
+            [self webAPIForFriendList:0 withSearch:searchBarObj.text];
+
+        }
+        else if(service.tag==3){
+            [self webAPIForFriendList:0 withSearch:searchBarObj.text];
+
+        }
+    
+}
+- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
+    NSDate *today = [NSDate date];
+    NSDateComponents *ageComponents = [[NSCalendar currentCalendar]
+                                       components:NSYearCalendarUnit
+                                       fromDate:birthdate
+                                       toDate:today
+                                       options:0];
+    return ageComponents.year;
 }
 
 

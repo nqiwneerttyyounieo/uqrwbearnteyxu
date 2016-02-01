@@ -18,5 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblMutualSports;
 @property (weak, nonatomic) IBOutlet UIImageView *imgViewFriendsProfile;
 
+@property (weak, nonatomic) IBOutlet UIButton *btnAcceptRequest;
+@property (weak, nonatomic) IBOutlet UIButton *btnRejectRequest;
 
 @end

@@ -15,6 +15,7 @@
 #import "BlockOperationWithIdentifier.h"
 #import "FriendsService.h"
 #import "MBProgressHUD.h"
+#import "WebConstants.h"
 
 @interface ProfileViewController ()<UITableViewDataSource,UITableViewDelegate,WebServiceDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableview;
@@ -34,7 +35,6 @@
     [super viewDidLoad];
     loggedInUser = [[CommansUtility sharedInstance]loadUserObjectWithKey:@"loggedInUser"];
 
-    self.tabBarController.navigationController.navigationBar.hidden =  YES;
     [self.tableview registerClass:[PPImageScrollingTableViewCell class] forCellReuseIdentifier:@"cellImageScolling"];
 
     // Do any additional setup after loading the view.
@@ -48,6 +48,10 @@
     self.eventImageOperationQueue = [[NSOperationQueue alloc]init];
     self.eventImageOperationQueue.maxConcurrentOperationCount = 2;
 
+    if(self.friendModel){
+        self.navigationItem.title = [NSString stringWithFormat:@"%@'s Profile",self.friendModel.strClientUserName];
+
+    }
 }
 
 -(void)setUpBackButton{
@@ -65,10 +69,35 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 
+   // self.topConstarintTable.constant = 2;
+    NSLog(@"Constrin %f",self.topConstarintTable.constant);
+    [self.navigationController.navigationBar
+     setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+
+}
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.tabBarController.navigationController.navigationBar.hidden =  NO;
+    
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    self.tabBarController.navigationController.navigationBar.hidden =  YES;
+    NSLog(@"Constrin %f",self.topConstarintTable.constant);
+   // self.topConstarintTable.constant = 2;
+
+}
+
+-(void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    NSLog(@"Constrin %f",self.topConstarintTable.constant);
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -84,6 +113,14 @@
     friendService.delegate=self;
     [friendService sendFriendRequestFromUserId:loggedInUser.strUserId andTo:fModel.strUserID];
     
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+}
+
+-(void)webCancelFriend:(FriendModel *)fModel{
+    friendService = [[FriendsService alloc]init];
+    friendService.tag = 1;
+    friendService.delegate=self;
+    [friendService deleteFriendRequestFromUserId:loggedInUser.strUserId   andTo:fModel.strUserID];
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 }
 
@@ -125,18 +162,45 @@
             //friendship status
             [btnFriendshipStatus addTarget:self action:@selector(btnFriendshipStatusClicked:) forControlEvents:UIControlEventTouchDown];
             if([self.friendModel.strRelationshipStatus isEqualToString:@"0"]){
-                [btnFriendshipStatus setImage:[UIImage imageNamed:@"AddFriend.png"] forState:UIControlStateNormal];
+                [btnFriendshipStatus setImage:[UIImage imageNamed:@"addfriendship.png"] forState:UIControlStateNormal];
             }
             else if ([self.friendModel.strRelationshipStatus isEqualToString:@"1"]){
-                [btnFriendshipStatus setImage:[UIImage imageNamed:@"friendship-already-icon.png"] forState:UIControlStateNormal];
+                if(self.friendModel.isRequestFriend){
+                    [btnFriendshipStatus setImage:[UIImage imageNamed:@"requestfriend.png"] forState:UIControlStateNormal];
+                }
+                else{
+                    [btnFriendshipStatus setImage:[UIImage imageNamed:@"requestfriend.png"] forState:UIControlStateNormal];
+                }
                 
+            }
+            else if ([self.friendModel.strRelationshipStatus isEqualToString:@"2"]){
+                [btnFriendshipStatus setImage:[UIImage imageNamed:@"friendship-already-icon.png"] forState:UIControlStateNormal];
+
+            }
+            else{
+                [btnFriendshipStatus setImage:[UIImage imageNamed:@"addfriend.png"] forState:UIControlStateNormal];
+
             }
             
             
             
             [VIewUtility addHexagoneShapeMaskFor:imgviewProfile];
-            lblProfileName.text = self.friendModel.strClientUserName;
-            lblProfileStatus.text = self.friendModel.strEmail;
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+            [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+            [formatter setDateFormat:@"MM/dd/YYYY"];
+            NSDate *birthDate = [formatter dateFromString:self.friendModel.strBithdate];
+            NSInteger age = [self ageFromBirthday:birthDate];
+
+            
+            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%ld)",self.friendModel.strClientUserName,(long)age]];
+            [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0] range:NSMakeRange(0, self.friendModel.strClientUserName.length)];
+            
+            lblProfileName.attributedText = string;
+
+            
+            lblProfileStatus.text = @"";
             
             
             
@@ -194,8 +258,23 @@
         UIButton *btnMeetup = (UIButton *)[cell viewWithTag:205];
 
         [VIewUtility addHexagoneShapeMaskFor:imgviewProfile];
-        lblProfileName.text = loggedInUser.strClientUserName;
-        lblProfileStatus.text = loggedInUser.strEmailID;
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+            [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+            [formatter setDateFormat:@"MM/dd/YYYY"];
+            NSDate *birthDate = [formatter dateFromString:loggedInUser.strBirthdate];
+            NSInteger age = [self ageFromBirthday:birthDate];
+            
+            
+            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%ld)",loggedInUser.strClientUserName,(long)age]];
+            [string addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"HelveticaNeue-Bold" size:14.0] range:NSMakeRange(0, loggedInUser.strClientUserName.length)];
+            
+            lblProfileName.attributedText = string;
+
+            
+      //  lblProfileName.text = loggedInUser.strClientUserName;
+        lblProfileStatus.text = @"";
         //[btnFriendshipStatus addTarget:self action:@selector(btnFriendshipStatusClicked:) forControlEvents:UIControlEventTouchDown];
         
         
@@ -247,33 +326,76 @@
     else if(indexPath.section ==1){
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellSelection"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        UISegmentedControl *segmentControl = (UISegmentedControl *)[cell viewWithTag:200];
+        
+        [segmentControl setSelectedSegmentIndex:1];
+        [segmentControl addTarget:self action:@selector(btnSegmentClikced:) forControlEvents:UIControlEventValueChanged];
+        
         return cell;
     }
     else if(indexPath.section ==2){
+        NSString *strStatus;
+        if(self.friendModel){
+            //status
+            strStatus = self.friendModel.strUserStatus;
+        }
+        else{
+                        //status
+            strStatus = loggedInUser.strUserStatus;
+        }
+      
+        
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellFriendStatus"];
         UILabel *lblProfileName = (UILabel *)[cell viewWithTag:400];
-        lblProfileName.text = @"Apple leads the world in innovation with iPhone, iPad, Mac, Apple Watch, iOS, OS X, watchOS and more. Visit the site to learn, buy and get support.";
+        lblProfileName.text = strStatus;
+        
         lblProfileName.preferredMaxLayoutWidth = 250;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
         
     }
     else if(indexPath.section ==3){
-        NSArray *array = @[
+        NSMutableArray *arrayOfSportsFriend;
+        if(self.friendModel){
+            arrayOfSportsFriend = self.friendModel.arrayOfSports;
+        }
+        else{
+            arrayOfSportsFriend = loggedInUser.arrayOfSports;
+        }
+        
+        NSMutableDictionary *category = [[NSMutableDictionary alloc]init];
+        NSString *strCat = [NSString stringWithFormat:@"Your sports (%lu)",(unsigned long)arrayOfSportsFriend.count];
+        [category setValue:strCat forKey:@"category"];
+        
+        NSMutableArray *arryOfImages = [[NSMutableArray alloc]init];
+        for (int k=0; k<arrayOfSportsFriend.count; k++) {
+            NSDictionary *propSports = [arrayOfSportsFriend objectAtIndex:k];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
+            [dict setValue:@"Name" forKey:@"name"];
+            NSString *url = [NSString stringWithFormat:@"%@/%@",baseURL,[propSports valueForKey:@"SportIconThumb"]];
+            [dict setValue:url forKey:@"URL"];
+            [arryOfImages addObject:dict];
+        }
+        [category setValue:arryOfImages forKey:@"images"];
+        
+        NSArray *array = @[category];
+       /* NSArray *array = @[
                         @{ @"category": @"Your sports (25)",
                            @"images":
                                @[
-                                   @{ @"name":@"icon29.png", @"title":@"A-0"},
+                                   @{ @"name":@"icon29.png", @"URL":@"http://www.imge.com/wp-content/uploads/2011/07/jordanIMGE-340x300.jpg"},
                                    @{ @"name":@"icon29.png", @"title":@"A-1"},
                                    @{ @"name":@"", @"title":@"A-2"},
                                    @{ @"name":@"", @"title":@"A-3"},
                                    @{ @"name":@"", @"title":@"A-4"},
                                    @{ @"name":@"", @"title":@"A-5"}
                                    
-                                   ]
+                                ]
                            }
                         ];
 
+        */
         
         PPImageScrollingTableViewCell *customCell = [tableView dequeueReusableCellWithIdentifier:@"cellImageScolling" forIndexPath:indexPath];
         [customCell setBackgroundColor:[UIColor clearColor]];
@@ -287,20 +409,32 @@
         return customCell;
     }
     else if(indexPath.section ==4){
-        NSArray *array = @[
-                           @{ @"category": @"Your sports (25)",
-                              @"images":
-                                  @[
-                                      @{ @"name":@"icon29.png", @"title":@"A-0"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-1"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-2"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-3"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-4"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"}
-                                      
-                                      ]
-                              }
-                           ];
+        NSMutableArray *arrayOfFriends;
+        if(self.friendModel){
+            arrayOfFriends = self.friendModel.arrayOfFriends;
+        }
+        else{
+            arrayOfFriends = loggedInUser.arrayOfFriends;
+        }
+       
+        
+        NSMutableDictionary *category = [[NSMutableDictionary alloc]init];
+        NSString *strCat = [NSString stringWithFormat:@"Your sports (%lu)",(unsigned long)arrayOfFriends.count];
+        [category setValue:strCat forKey:@"category"];
+        
+        NSMutableArray *arryOfImages = [[NSMutableArray alloc]init];
+        for (int k=0; k<arrayOfFriends.count; k++) {
+            NSDictionary *propSports = [arrayOfFriends objectAtIndex:k];
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
+            [dict setValue:@"Name" forKey:@"ThumbImgPath"];
+            NSString *url = [NSString stringWithFormat:@"%@/%@",baseURL,[propSports valueForKey:@"ThumbImgPath"]];
+            [dict setValue:url forKey:@"URL"];
+            [arryOfImages addObject:dict];
+        }
+        [category setValue:arryOfImages forKey:@"images"];
+        
+        NSArray *array = @[category];
+      
         
         
         PPImageScrollingTableViewCell *customCell = [tableView dequeueReusableCellWithIdentifier:@"cellImageScolling" forIndexPath:indexPath];
@@ -317,16 +451,9 @@
     }
     else if(indexPath.section ==5){
         NSArray *array = @[
-                           @{ @"category": @"Your sports (25)",
+                           @{ @"category": @"Your sports (32)",
                               @"images":
                                   @[
-                                      @{ @"name":@"icon29.png", @"title":@"A-0"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-1"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-2"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-3"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-4"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"}
-                                      
                                       ]
                               }
                            ];
@@ -346,21 +473,9 @@
     }
     else if(indexPath.section ==6){
         NSArray *array = @[
-                           @{ @"category": @"Your sports (25)",
+                           @{ @"category": @"Your sports (34)",
                               @"images":
                                   @[
-                                      @{ @"name":@"icon29.png", @"title":@"A-0"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-1"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-2"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-3"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-4"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"},
-                                      @{ @"name":@"icon29.png", @"title":@"A-5"}
-                                      
                                       ]
                               }
                            ];
@@ -423,17 +538,64 @@
     [view addSubview:lbl];
     
     if(section == 3){
-        lbl.text = @"Your sports (25)";
+        NSMutableArray *arrayOfSportsFriend;
+        if(self.friendModel){
+            arrayOfSportsFriend = self.friendModel.arrayOfSports;
+            NSString *strCat = [NSString stringWithFormat:@"%@'s sports (%lu)",self.friendModel.strClientUserName,(unsigned long)arrayOfSportsFriend.count];
+            lbl.text = strCat;
+
+        }
+        else{
+            arrayOfSportsFriend = loggedInUser.arrayOfSports;
+            NSString *strCat = [NSString stringWithFormat:@"Your sports (%lu)",(unsigned long)arrayOfSportsFriend.count];
+            lbl.text = strCat;
+
+        }
+        
     }
     else if(section == 4){
-        lbl.text = @"Your friends (235)";
+        NSString *str;
+        if(self.friendModel){
+            str = self.friendModel.strFriendsCount;
+            NSString *strCat = [NSString stringWithFormat:@"%@'s friends (%@)",self.friendModel.strClientUserName,str];
+            lbl.text = strCat;
+
+        }
+        else{
+            str = [NSString stringWithFormat:@"%lu",(unsigned long)loggedInUser.arrayOfFriends.count];
+            NSString *strCat = [NSString stringWithFormat:@"Your friends (%@)",str];
+            lbl.text = strCat;
+
+        }
+        
+        
     }
     else if(section == 5){
-        lbl.text = @"Your 1:1 meetups (23)";
+        NSString *str;
+        if(self.friendModel){
+            str = self.friendModel.strMeetUpCount;
+            NSString *strCat = [NSString stringWithFormat:@"%@'s 1:1 meetups (%@)",self.friendModel.strClientUserName,str];
+            lbl.text = strCat;
+
+        }
+        else{
+            str = loggedInUser.strMeetUpCount;
+            NSString *strCat = [NSString stringWithFormat:@"Your 1:1 meetups (%@)",str];
+            lbl.text = @"Your 1:1 meetups (0)";
+        }
+        
     }
     
     else if(section == 6){
-        lbl.text = @"Your upcoming meetups (12)";
+        if(self.friendModel){
+            NSString *strCat = [NSString stringWithFormat:@"%@'s upcoming meetups (0)",self.friendModel.strClientUserName];
+
+            lbl.text = strCat;
+        }
+        else{
+            lbl.text = @"Your upcoming meetups (0)";
+
+        }
 
     }
     
@@ -525,10 +687,49 @@
 -(void)btnFriendshipStatusClicked:(id)sender{
     NSLog(@"Friednship clicked");
     if([self.friendModel.strRelationshipStatus isEqualToString:@"0"]){
-        [self webAPIAddFriend:self.friendModel];
+        [self alertOKCancelActionForAddFriend];
     }
     else if ([self.friendModel.strRelationshipStatus isEqualToString:@"1"]){
-        
+        [self alertOKCancelAction];
+    }
+    else if ([self.friendModel.strRelationshipStatus isEqualToString:@"2"]){
+        [self alertOKCancelAction];
+    }
+}
+
+- (void)alertOKCancelActionForAddFriend {
+    // open a alert with an OK and cancel button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"SEND FRIEND REQUEST ?" message:@"ARE YOU SURE YOU WANT TO SEND FRIEND REQUEST?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    alert.tag = 2;
+    [alert show];
+}
+
+- (void)alertOKCancelAction {
+    // open a alert with an OK and cancel button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"DELETE FRIEND REQUEST?" message:@"DO YOU REALLY WANT TO QUIT OUR FRIENDSHIP?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    alert.tag = 1;
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // the user clicked one of the OK/Cancel buttons
+    if(alert.tag == 1)
+    {
+        if(buttonIndex == alert.cancelButtonIndex)
+        {
+            NSLog(@"cancel");
+        }
+        else
+        {
+            [self webCancelFriend:self.friendModel];
+        }
+    }
+    else if (alert.tag==2){
+        if(buttonIndex != alert.cancelButtonIndex){
+            [self webAPIAddFriend:self.friendModel];
+
+        }
     }
 }
 
@@ -550,7 +751,7 @@
 
 - (void)request:(id)serviceRequest didFailWithError:(NSError *)error{
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    
+      [[[UIAlertView alloc]initWithTitle:@"Error" message:error.localizedDescription delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
 }
 
 - (void)request:(id)serviceRequest didSucceedWithArray:(NSMutableArray *)responseData{
@@ -562,6 +763,32 @@
         [self.tableview reloadData];
         
     }
+    else if (service.tag == 1){
+        self.friendModel.strRelationshipStatus = @"4";
+        [self.tableview reloadData];
+    }
 }
 
+- (NSInteger)ageFromBirthday:(NSDate *)birthdate {
+    NSDate *today = [NSDate date];
+    NSDateComponents *ageComponents = [[NSCalendar currentCalendar]
+                                       components:NSYearCalendarUnit
+                                       fromDate:birthdate
+                                       toDate:today
+                                       options:0];
+    return ageComponents.year;
+}
+
+
+-(void)btnSegmentClikced:(id)sender{
+    UISegmentedControl *seg=(UISegmentedControl *)sender;
+    if(seg.selectedSegmentIndex == 0){
+        [[[UIAlertView alloc]initWithTitle:@"Coming soon" message:@"Personal Stream functionality will be available in later release !" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
+        [seg setSelectedSegmentIndex:1];
+
+    }
+    else{
+        
+    }
+}
 @end

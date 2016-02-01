@@ -15,9 +15,10 @@
 
 @implementation FriendsService
 
--(void)getFriendListOnUserId:(NSString *)userID andPageNo:(int)pageNo{
+-(void)getFriendListOnUserId:(NSString *)userID andPageNo:(int)pageNo andSearchText:(NSString *)searchtext{
     int skip = pageNo * kServerPagingLimit;
-    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@UserId=%@&skip=%d&take=%d",getFriendList,userID,skip,kServerPagingLimit]];
+    NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"%@UserId=%@&skip=%d&take=%d&searchText=%@",getFriendList,userID,skip,kServerPagingLimit,searchtext]];
+    
     self.request = [ASIHTTPRequest requestWithURL:url];
     self.request.tag=1;
     //  CookieManager *p=[[CookieManager alloc]init];
@@ -44,6 +45,8 @@
     else{
         url=[NSURL URLWithString:[NSString stringWithFormat:@"%@id=%@&skip=%d&take=%d",searchFriendList,userID,skip,kServerPagingLimit]];
     }
+    url=[NSURL URLWithString:[NSString stringWithFormat:@"%@id=%@&skip=%d&take=%d&searchText=%@",searchFriendList,userID,skip,kServerPagingLimit,text]];
+
     self.request = [ASIHTTPRequest requestWithURL:url];
     self.request.tag=2;
     //  CookieManager *p=[[CookieManager alloc]init];
@@ -83,6 +86,85 @@
     [self.requestform setTimeOutSeconds:30];
     [self.requestform startAsynchronous];
 }
+
+-(void)acceptFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID{
+    NSURL *url=[NSURL URLWithString:addFriendRequest];
+    self.requestform = [ASIFormDataRequest requestWithURL:url];
+    self.requestform.tag=4;
+    //  CookieManager *p=[[CookieManager alloc]init];
+    //  [self.requestform setRequestCookies:[NSMutableArray arrayWithObject:[p getCookie]]];
+    [self.requestform setRequestMethod:@"PUT"];
+
+    [self.requestform setPostValue:userID forKey:@"UserId"];
+    [self.requestform setPostValue:frUserID forKey:@"FriendId"];
+    [self.requestform setPostValue:@"2" forKey:@"RelationshipStatus"];
+    [self.requestform setPostValue:userID forKey:@"ActionUserId"];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"MM/dd/YYYY"];
+    [self.requestform setPostValue:[formatter stringFromDate:[NSDate date]] forKey:@"Created"];
+    
+    
+    [self.requestform setDidFailSelector:@selector(requestFinishedWithError:)];
+    [self.requestform setDidFinishSelector:@selector(requestFinishedSuccessfully:)];
+    [self.requestform setShouldContinueWhenAppEntersBackground:YES];
+    [self.requestform setDelegate:self];
+    [self.requestform setTimeOutSeconds:30];
+    [self.requestform startAsynchronous];
+}
+
+-(void)rejectFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID{
+    NSURL *url=[NSURL URLWithString:addFriendRequest];
+    self.requestform = [ASIFormDataRequest requestWithURL:url];
+    self.requestform.tag=5;
+    //  CookieManager *p=[[CookieManager alloc]init];
+    //  [self.requestform setRequestCookies:[NSMutableArray arrayWithObject:[p getCookie]]];
+    [self.requestform setRequestMethod:@"PUT"];
+
+    [self.requestform setPostValue:userID forKey:@"UserId"];
+    [self.requestform setPostValue:frUserID forKey:@"FriendId"];
+    [self.requestform setPostValue:@"3" forKey:@"RelationshipStatus"];
+    [self.requestform setPostValue:userID forKey:@"ActionUserId"];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"MM/dd/YYYY"];
+    [self.requestform setPostValue:[formatter stringFromDate:[NSDate date]] forKey:@"Created"];
+    
+    
+    [self.requestform setDidFailSelector:@selector(requestFinishedWithError:)];
+    [self.requestform setDidFinishSelector:@selector(requestFinishedSuccessfully:)];
+    [self.requestform setShouldContinueWhenAppEntersBackground:YES];
+    [self.requestform setDelegate:self];
+    [self.requestform setTimeOutSeconds:30];
+    [self.requestform startAsynchronous];
+}
+
+-(void)deleteFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID{
+    NSURL *url=[NSURL URLWithString:addFriendRequest];
+    self.requestform = [ASIFormDataRequest requestWithURL:url];
+    self.requestform.tag=6;
+    //  CookieManager *p=[[CookieManager alloc]init];
+    //  [self.requestform setRequestCookies:[NSMutableArray arrayWithObject:[p getCookie]]];
+    [self.requestform setRequestMethod:@"PUT"];
+    
+    [self.requestform setPostValue:userID forKey:@"UserId"];
+    [self.requestform setPostValue:frUserID forKey:@"FriendId"];
+    [self.requestform setPostValue:@"4" forKey:@"RelationshipStatus"];
+    [self.requestform setPostValue:userID forKey:@"ActionUserId"];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"MM/dd/YYYY"];
+    [self.requestform setPostValue:[formatter stringFromDate:[NSDate date]] forKey:@"Created"];
+    
+    
+    [self.requestform setDidFailSelector:@selector(requestFinishedWithError:)];
+    [self.requestform setDidFinishSelector:@selector(requestFinishedSuccessfully:)];
+    [self.requestform setShouldContinueWhenAppEntersBackground:YES];
+    [self.requestform setDelegate:self];
+    [self.requestform setTimeOutSeconds:30];
+    [self.requestform startAsynchronous];
+}
+
 
 
 #pragma mark - Reponse delegate
@@ -151,6 +233,55 @@
         }
         
     }
+    else if (theRequest.tag==4){
+        // Image upload status
+        NSError *error;
+        
+        
+        Parser *parser=[[Parser alloc]init];
+        NSMutableArray *array=[parser parseSendFriendRequestData:reponseData andError:&error];
+        
+        if(error){
+            [self.delegate request:self didFailWithError:error];
+        }
+        else{
+            [self.delegate request:self didSucceedWithArray:array];
+        }
+        
+    }
+    else if (theRequest.tag==5){
+        // Image upload status
+        NSError *error;
+        
+        
+        Parser *parser=[[Parser alloc]init];
+        NSMutableArray *array=[parser parseSendFriendRequestData:reponseData andError:&error];
+        
+        if(error){
+            [self.delegate request:self didFailWithError:error];
+        }
+        else{
+            [self.delegate request:self didSucceedWithArray:array];
+        }
+        
+    }
+    else if (theRequest.tag==6){
+        // Image upload status
+        NSError *error;
+        
+        
+        Parser *parser=[[Parser alloc]init];
+        NSMutableArray *array=[parser parseSendFriendRequestData:reponseData andError:&error];
+        
+        if(error){
+            [self.delegate request:self didFailWithError:error];
+        }
+        else{
+            [self.delegate request:self didSucceedWithArray:array];
+        }
+        
+    }
+
 }
 
 @end

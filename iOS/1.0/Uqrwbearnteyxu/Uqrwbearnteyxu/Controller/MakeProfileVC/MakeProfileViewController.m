@@ -17,7 +17,7 @@
 #import "MBProgressHUD.h"
 
 
-@interface MakeProfileViewController ()<WebServiceDelegate>
+@interface MakeProfileViewController ()<WebServiceDelegate,CustomDatePickerDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *imgviewProfile;
 @property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (strong, nonatomic) IBOutlet UIButton *btnMale;
@@ -46,7 +46,7 @@
     UserModel *loggedInUser;
     NSString *strGender;
     
-    
+    NSDate *selectedDate;
 }
 
 - (void)viewDidLoad {
@@ -91,6 +91,14 @@
 #pragma mark
 
 -(void)setUp{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"MM/dd/YYYY"];
+    //NSString *selectedDate = [formatter stringFromDate:self.datePicker.date];
+    selectedDate = [formatter dateFromString:@"01/01/1990"];
+    
+    
+    self.customDatePicker.delegate=self;
+    
     [self setUpTextfields];
     [self setUpHexagonShapes];
     [self addTapGuesture];
@@ -356,10 +364,10 @@
     
         NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
         [formatter setDateFormat:@"MM/dd/YYYY"];
-        NSString *selectedDate = [formatter stringFromDate:self.datePicker.date];
+        NSString *date = [formatter stringFromDate:selectedDate];
         
         UserModel *model= [[UserModel alloc]init];
-        model.strBirthdate = selectedDate;
+        model.strBirthdate = date;
         model.strEmailID = loggedInUser.strEmailID;
         model.strGender = strGender;
         //model.strUserId = @"Rahul";
@@ -391,6 +399,9 @@
         strGender = @"false";
     }
 }
+
+
+
 
 #pragma mark - Web service response
 
@@ -437,6 +448,13 @@
     [[[UIAlertView alloc]initWithTitle:@"UrbanEx" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
 }
 
+#pragma mark - Custom Date picker delegate
+#pragma mark
 
+-(void)customDatePicker:(id)datePicker withSelectedDate:(NSDate *)date{
+    selectedDate = date;
+    NSLog(@"Selected date### %@",date);
+    
+}
 
 @end

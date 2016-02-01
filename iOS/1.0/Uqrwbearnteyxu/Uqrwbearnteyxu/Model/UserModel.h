@@ -19,9 +19,18 @@
 @property (readwrite, nonatomic) NSString *strGender;
 @property (readwrite, nonatomic) NSString *strRecidence;
 
+@property (strong,nonatomic) NSString *strFriendsCount;
+
 @property (readwrite, nonatomic) UIImage *imgProfile;
 @property (readwrite, nonatomic) NSString *strClientUserName;
 @property (readwrite, nonatomic) NSString *strProfileURL;
 @property (readwrite, nonatomic) NSString *strProfileURLThumb;
+@property (strong, nonatomic) NSMutableArray *arrayOfSports;
+@property (readwrite, nonatomic) NSString *strUserStatus;
+
+@property (strong,nonatomic)NSString *strMeetUpCount;
+@property (strong,nonatomic)NSMutableArray *arrayOfFriends;
+@property (strong,nonatomic)NSMutableArray *arrayOfMutualFriends;
+
 
 @end

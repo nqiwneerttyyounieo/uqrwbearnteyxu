@@ -8,6 +8,7 @@
 
 #import "PPImageScrollingCellView.h"
 #import "PPCollectionViewCell.h"
+#import "BlockOperationWithIdentifier.h"
 
 @interface  PPImageScrollingCellView () <UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -18,6 +19,8 @@
 @property (nonatomic) CGFloat imagetitleHeight;
 @property (strong, nonatomic) UIColor *imageTilteBackgroundColor;
 @property (strong, nonatomic) UIColor *imageTilteTextColor;
+@property (nonatomic, strong) NSCache *eventImageCache;
+@property (nonatomic, strong) NSOperationQueue *eventImageOperationQueue;
 
 
 @end
@@ -27,6 +30,9 @@
 
 -(void)awakeFromNib{
     [super awakeFromNib];
+    self.eventImageCache=[[NSCache alloc]init];
+    self.eventImageOperationQueue = [[NSOperationQueue alloc]init];
+    self.eventImageOperationQueue.maxConcurrentOperationCount = 10;
 
     
     /* Set flowLayout for CollectionView*/
@@ -51,7 +57,10 @@
     
     if (self) {
         // Initialization code
-
+        self.eventImageCache=[[NSCache alloc]init];
+        self.eventImageOperationQueue = [[NSOperationQueue alloc]init];
+        self.eventImageOperationQueue.maxConcurrentOperationCount = 10;
+        
         /* Set flowLayout for CollectionView*/
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
         flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -67,6 +76,8 @@
 
         [self.myCollectionView registerClass:[PPCollectionViewCell class] forCellWithReuseIdentifier:@"PPCollectionCell"];
         [self addSubview:_myCollectionView];
+        
+        
     }
     return self;
 }
@@ -117,6 +128,46 @@
     [cell setImageTitleLabelWitdh:_imagetitleWidth withHeight:_imagetitleHeight];
     [cell setImageTitleTextColor:_imageTilteTextColor withBackgroundColor:_imageTilteBackgroundColor];
     [cell setTitle:[imageDic objectForKey:@"title"]];
+    
+    NSString *urlToImage =[imageDic objectForKey:@"URL"];
+   // urlToImage = @"http://5.189.161.31/images/usersports/thumb/e80718fb-f553-41ed-b755-c8fb049438ce.jpg";
+    
+    if(urlToImage.length){
+    UIImage *imageFromCache = [self.eventImageCache objectForKey:[NSString stringWithFormat:@"%@",urlToImage]];
+    if (imageFromCache) {
+        [cell setImage:imageFromCache];
+    }else{
+        
+        [cell setImage:nil];
+        BlockOperationWithIdentifier *operation = [BlockOperationWithIdentifier blockOperationWithBlock:^{
+            
+            NSData *imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlToImage]];
+            
+            UIImage *img = [UIImage imageWithData:imageData];
+            if (img) {
+                [self.eventImageCache setObject:img forKey:[NSString stringWithFormat:@"%@",urlToImage]];
+                
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    PPCollectionViewCell *updateCell =(PPCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+                    if (updateCell) {
+                        
+                        [updateCell setImage:img];
+                    }
+                    else{
+                                        NSLog(@"%%%%%%%%% NO cell");
+                    }
+                }];
+            }
+            else{
+                NSLog(@"%%%%%%%%% NO IMG");
+            }
+        }];
+        operation.queuePriority = NSOperationQueuePriorityNormal;
+        operation.identifier=urlToImage;
+        [self.eventImageOperationQueue addOperation:operation];
+    }
+
+    }
     return cell;
 }
 

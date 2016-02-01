@@ -61,7 +61,8 @@
     [self.requestform startAsynchronous];
 }
 
--(void)loginWithUserName:(NSString *)userName andPassword:(NSString *)password{
+-(void)loginWithUserName:(NSString *)userName andPassword:(NSString *)password token:(NSString *)deviceToken{
+    
     NSURL *url=[NSURL URLWithString:loginURL];
     self.requestform = [ASIFormDataRequest requestWithURL:url];
     self.requestform.tag=1;
@@ -71,6 +72,10 @@
     [self.requestform setPostValue:userName forKey:@"Username"];
     [self.requestform setPostValue:password forKey:@"Password"];
     [self.requestform setPostValue:@"password" forKey:@"grant_type"];
+    [self.requestform setPostValue:deviceToken forKey:@"DeviceToken"];
+    [self.requestform setPostValue:@"iOS" forKey:@"DeviceType"];
+    [self.requestform setPostValue:@"18.15" forKey:@"Latitude"];
+    [self.requestform setPostValue:@"73.98" forKey:@"Longitude"];
 
     [self.requestform setDidFailSelector:@selector(requestFinishedWithError:)];
     [self.requestform setDidFinishSelector:@selector(requestFinishedSuccessfully:)];

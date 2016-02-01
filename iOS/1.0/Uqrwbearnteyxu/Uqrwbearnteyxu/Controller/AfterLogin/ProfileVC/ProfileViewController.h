@@ -12,5 +12,7 @@
 @interface ProfileViewController : UIViewController
 
 @property(nonatomic,strong)FriendModel *friendModel;
+@property(nonatomic,strong)IBOutlet NSLayoutConstraint *topConstarintTable;
+
 
 @end

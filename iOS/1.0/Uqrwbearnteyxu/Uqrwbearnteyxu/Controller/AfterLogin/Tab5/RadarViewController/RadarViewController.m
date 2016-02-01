@@ -84,6 +84,8 @@
     self.gbSliderView.maxValue = radarView.arrayOfLineViews.count;
     self.gbSliderView.minValue = 0;
     self.gbSliderView.defaultValue = 0;
+    self.gbSliderView.sliderTrackHeight = 2;
+    
     
     
     [self.gbSliderView renderSliderBubbleView];
@@ -373,6 +375,10 @@
     
     
     value = (int)radarView.arrayOfLineViews.count- value;
+    value = value-1;
+    if(value<0){
+        value=0;
+    }
     [radarView selectLineAtIndex:(int)value];
     
     [self webAPIForFriendsForSliderValue:percentage];

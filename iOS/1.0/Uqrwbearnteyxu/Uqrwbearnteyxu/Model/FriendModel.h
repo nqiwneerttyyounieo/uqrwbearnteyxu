@@ -26,7 +26,12 @@
 @property (strong, nonatomic) NSString *strUserName;
 @property (strong, nonatomic) NSString *strClientUserName;
 @property (strong, nonatomic) NSMutableArray *arrayOfSports;
+@property (strong, nonatomic) NSMutableArray *arrayOfFriends;
+
 @property (strong, nonatomic) NSString *strRelationshipStatus;
+@property (strong, nonatomic) NSString *strUserStatus;
+@property (strong, nonatomic) NSString *strDistance;
+
 
 @property (readwrite, nonatomic) BOOL isRequestFriend;
 

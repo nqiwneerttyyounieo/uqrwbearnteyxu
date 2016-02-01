@@ -20,10 +20,13 @@
 //shared instance
 + (FriendsService *)sharedInstance;
 
--(void)getFriendListOnUserId:(NSString *)userID andPageNo:(int)pageNo;
+-(void)getFriendListOnUserId:(NSString *)userID andPageNo:(int)pageNo andSearchText:(NSString *)searchtext;
 -(void)getAllUserList:(NSString *)userID andPageNo:(int)pageNo forSearchedText:(NSString *)text;
 
 
 -(void)sendFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID;
+-(void)acceptFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID;
+-(void)rejectFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID;
+-(void)deleteFriendRequestFromUserId:(NSString *)userID andTo:(NSString *)frUserID;
 
 @end

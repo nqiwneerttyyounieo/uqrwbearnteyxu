@@ -22,7 +22,7 @@
 + (UserService *)sharedInstance;
 
 -(void)registerWithUserName:(NSString *)userName andPassword:(NSString *)password;
--(void)loginWithUserName:(NSString *)userName andPassword:(NSString *)password;
+-(void)loginWithUserName:(NSString *)userName andPassword:(NSString *)password token:(NSString *)deviceToken;
 -(void)forgotPasswordWithEmailID:(NSString *)email;
 
 -(void)makeProfileWithUserModel:(UserModel *)userModel;

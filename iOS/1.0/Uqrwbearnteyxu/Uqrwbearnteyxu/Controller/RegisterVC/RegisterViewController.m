@@ -15,9 +15,10 @@
 
 
 #define REGEX_EMAIL @"[A-Z0-9a-z._%+-]{3,}+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"
-#define REGEX_PASSWORD_LIMIT @"^.{2,20}$"
-#define REGEX_PASSWORD @"^(?=.*?[0-9].*?[0-9])(?=.*[!@#$%])[0-9a-zA-Z!@#$%0-9]{6,}"
-//#define REGEX_PASSWORD @"^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z]).*${6,}"
+#define REGEX_PASSWORD_LIMIT @"^.{6,20}$"
+//#define REGEX_PASSWORD @"^(?=.*?[0-9].*?[0-9])(?=.*[!@#$%])[0-9a-zA-Z!@#$%0-9]{6,}"
+#define REGEX_PASSWORD @"^.*(?=.{6,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*${6,}"
+//#define REGEX_PASSWORD @"^[a-zA-Z0-9]*$"
 
 @interface RegisterViewController ()<WebServiceDelegate>
 @property (strong, nonatomic) IBOutlet UIButton *btnGo;
@@ -144,7 +145,7 @@
   //  [self.txtPassword addRegx:REGEX_PASSWORD withMsg:@"Password must contain alpha numeric characters."];
     [self.txtPassword addRegx:REGEX_PASSWORD_LIMIT withMsg:@"Password characters limit should be come between 6-20"];
     
-      [self.txtPassword addRegx:REGEX_PASSWORD withMsg:@"The entered password does not fit the password guilines. The password must be at lease 6 digits long contains one upper case and one lower case character and one number and one special character. Ex - Sample#123"];
+      [self.txtPassword addRegx:REGEX_PASSWORD withMsg:@"The entered password does not fit the password guilines. The password must be at lease 6 digits long contains one upper case and one lower case character and one number. Ex - Sample123"];
 
     
     [self.txtConfirmPassword addConfirmValidationTo:self.txtPassword withMsg:@"The entered passwords does not match. Please enter two matching passwords"];
@@ -290,4 +291,6 @@
 -(void)showErrorMessage:(NSString *)message{
     [[[UIAlertView alloc]initWithTitle:@"ERROR" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
 }
+
+
 @end

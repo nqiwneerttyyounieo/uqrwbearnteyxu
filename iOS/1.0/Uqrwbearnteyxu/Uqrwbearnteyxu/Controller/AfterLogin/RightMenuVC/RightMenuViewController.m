@@ -142,9 +142,15 @@
             
             break;
         }
-		case 1:
+        case 1:{
             cell = [tableView dequeueReusableCellWithIdentifier:@"searchCell"];
+            UISearchBar *searchBar = [cell viewWithTag:101];
+            
+            searchBar.backgroundColor = [UIColor clearColor];
+            searchBar.barTintColor = [UIColor clearColor];
+            
 			break;
+        }
 			
         case 2:{
             cell = [tableView dequeueReusableCellWithIdentifier:@"menuCell"];
@@ -311,5 +317,8 @@
 //		[SlideNavigationController sharedInstance].menuRevealAnimator = revealAnimator;
 	}];
 }
+
+
+//are you sure want to log out ?
 
 @end

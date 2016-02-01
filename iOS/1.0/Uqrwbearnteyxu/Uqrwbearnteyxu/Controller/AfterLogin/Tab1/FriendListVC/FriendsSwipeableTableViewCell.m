@@ -248,6 +248,11 @@ static CGFloat const kBounceValue = 20.0f;
     }];
 }
 
+
+-(void)closeCell{
+    [self resetConstraintContstantsToZero:NO notifyDelegateDidClose:NO];
+}
+
 #pragma mark - UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {

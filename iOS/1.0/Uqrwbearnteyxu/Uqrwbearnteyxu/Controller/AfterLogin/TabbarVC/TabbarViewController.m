@@ -48,9 +48,12 @@
     
     self.tabBar.tintColor= [UIColor colorWithRed:148/255 green:249.0/255 blue:253.255 alpha:1];
 
+    
+   // self.tabBar.ima= [UIColor colorWithRed:148/255 green:249.0/255 blue:253.255 alpha:1];
 
     
-    
+    //[self.tabBar setBarTintColor:[UIColor yellowColor]];
+
     [self configureDCPathButton];
     // Do any additional setup after loading the view.
    
@@ -94,17 +97,8 @@
 
 -(void)rightMenuVC:(id)sender didSelectMenu:(enum menus)selectedMenu{
     if(selectedMenu == menuLogOut){
-        [[CommansUtility sharedInstance]saveUserObject:nil key:@"loggedInUser"];
-
-        UIViewController  *rootController =(AskForLoginViewController*)[[                    [[UIApplication sharedApplication]delegate] window] rootViewController];
-        if([rootController isKindOfClass:[AskForLoginViewController class]]){
-            [self.navigationController popToRootViewControllerAnimated:YES];
-        }
-        else{
-            AskForLoginViewController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"AskForLoginViewController"];
-            
-            [[SlideNavigationController sharedInstance] setViewControllers:[NSArray arrayWithObjects:tabBarVC, nil]];
-        }
+        
+        [self alertOKCancelAction];
         
     }
     else if (selectedMenu == menuProfile){
@@ -120,6 +114,7 @@
         
         UIViewController *vc ;
         vc = [mainStoryboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+        
         [nav pushViewController:vc animated:YES];
     }
     else if (selectedMenu == menuSearchFriend){
@@ -137,6 +132,40 @@
         [nav pushViewController:vc animated:YES];
     }
 }
+
+- (void)alertOKCancelAction {
+    // open a alert with an OK and cancel button
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log out" message:@"Are you sure want to log out ?" delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    alert.tag = 1;
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alert clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // the user clicked one of the OK/Cancel buttons
+    if(alert.tag == 1)
+    {
+        if(buttonIndex == alert.cancelButtonIndex)
+        {
+            NSLog(@"cancel");
+        }
+        else
+        {
+            [[CommansUtility sharedInstance]saveUserObject:nil key:@"loggedInUser"];
+            
+            UIViewController  *rootController =(AskForLoginViewController*)[[                    [[UIApplication sharedApplication]delegate] window] rootViewController];
+            if([rootController isKindOfClass:[AskForLoginViewController class]]){
+                [self.navigationController popToRootViewControllerAnimated:YES];
+            }
+            else{
+                AskForLoginViewController *tabBarVC = [self.storyboard instantiateViewControllerWithIdentifier:@"AskForLoginViewController"];
+                
+                [[SlideNavigationController sharedInstance] setViewControllers:[NSArray arrayWithObjects:tabBarVC, nil]];
+            }
+        }
+    }
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

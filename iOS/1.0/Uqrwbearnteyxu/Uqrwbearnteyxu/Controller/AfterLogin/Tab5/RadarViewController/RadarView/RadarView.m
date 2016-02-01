@@ -10,6 +10,7 @@
 #import "UIView+AddHexagone.h"
 #import "UserModel.h"
 #import "CommansUtility.h"
+#import "FriendModel.h"
 
 @import CoreGraphics;
 
@@ -126,12 +127,22 @@
 #pragma mark - Outers
 
 -(void)selectLineAtIndex:(int)index{
+    int isColored=0;
     for (int k=0; k<self.arrayOfLineViews.count; k++) {
         UIView *view = [self.arrayOfLineViews objectAtIndex:k];
         view.backgroundColor = [UIColor grayColor];
-        
-        if(k==(index)){
-            view.backgroundColor = [UIColor colorWithRed:148/255 green:249.0/255 blue:253.255 alpha:1];;
+        NSLog(@"Index %d %d",index,k);
+        if(k>=(index)){
+            if(isColored == 0){
+                view.backgroundColor = [UIColor colorWithRed:148/255 green:249.0/255 blue:253.255 alpha:1];
+                isColored = YES;
+            }
+            else{
+                isColored++;
+                if(isColored > 2){
+                    isColored=0;
+                }
+            }
         }
     }
     if(index>self.arrayOfLineViews.count-1){
@@ -187,9 +198,17 @@
                 
                 
                 UIButton *btnView = [[UIButton alloc]initWithFrame:CGRectMake(p.x+maxView.frame.origin.x, p.y+maxView.frame.origin.y, 30,50)];
+                
+
+                FriendModel *frModel = [anotationArray objectAtIndex:annotationPoints];
+                if([frModel.strRelationshipStatus isEqualToString:@"2"]){
+                    [btnView setImage:[UIImage imageNamed:@"RoundPinBlue.png"] forState:UIControlStateNormal];
+                    [btnView setImage:[UIImage imageNamed:@"UserPinSelected.png"] forState:UIControlStateSelected];
+                }
+                else{
                 [btnView setImage:[UIImage imageNamed:@"userPin.png"] forState:UIControlStateNormal];
                 [btnView setImage:[UIImage imageNamed:@"UserPinSelected.png"] forState:UIControlStateSelected];
-
+                }
                 [btnView addTarget:self action:@selector(btnAnnotationClicked:) forControlEvents:UIControlEventTouchDown];
                 btnView.tag = annotationPoints;
                 

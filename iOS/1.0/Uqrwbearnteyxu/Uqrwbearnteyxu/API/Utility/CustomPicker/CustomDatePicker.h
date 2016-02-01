@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol CustomDatePickerDelegate <NSObject>
+
+-(void)customDatePicker:(id)datePicker withSelectedDate:(NSDate *)date;
+
+@end
+
 @interface CustomDatePicker : UIView<UIPickerViewDataSource,UIPickerViewDelegate>
+@property (nonatomic,weak)id<CustomDatePickerDelegate> delegate;
 @property (nonatomic,weak)IBOutlet UIPickerView *pickerViewDate;
 
 

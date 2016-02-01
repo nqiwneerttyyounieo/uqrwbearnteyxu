@@ -193,30 +193,36 @@
     NSString *selectedMonth = arrayOfMonths[selectedM];
     NSString *selectedYear = arrayOfYears[selectedY];
     
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
+    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    [formatter setDateFormat:@"dd/MM/yyyy"];
+    
+    NSString *strDateToSend = [NSString stringWithFormat:@"%@/%@/%@",selectedDat,selectedMonth,selectedYear];
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(customDatePicker:withSelectedDate:)]){
+        [self.delegate customDatePicker:self withSelectedDate:[formatter dateFromString:strDateToSend]];
+    }
+  
     
     if(component == 1){
         NSString *strDate = [NSString stringWithFormat:@"%@/%@/%@",@"1",selectedMonth,selectedYear];
         
-        NSLog(@"selected date %@",strDate);
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        [formatter setDateFormat:@"dd/MM/yyyy"];
-        
+       // NSLog(@"selected date %@",strDate);
+       
         NSDate *adate = [formatter dateFromString:strDate];
         [self fillDayData:adate];
+        
+
     }
     else if (component == 2){
         NSString *strDate = [NSString stringWithFormat:@"%@/%@/%@",@"1",selectedMonth,selectedYear];
         
-        NSLog(@"selected date %@",strDate);
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
-        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        [formatter setDateFormat:@"dd/MM/yyyy"];
         
         NSDate *adate = [formatter dateFromString:strDate];
         [self fillDayData:adate];
+        
+       
     }
     
 }
